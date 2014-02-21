@@ -19,6 +19,8 @@ function AsyncTask( options ) {
 
   if( options.doInBackground )
     this.doInBackground = options.doInBackground
+  if( options.asyncInterfaceImplementation )
+    this.asyncInterfaceImplementation = options.asyncInterfaceImplementation
 }
 
 
