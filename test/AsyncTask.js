@@ -7,11 +7,11 @@ describe( 'AsyncTask', function() {
   describe('AsyncTask#execute', function() {
 
     it('should call the callback with the result of the doInBackground function', function( done ) {
-      var asyncTask = new AsyncTask()
-
-      asyncTask.doInBackground = function(a,b) {
-        return a + b
-      }
+      var asyncTask = new AsyncTask({
+        doInBackground: function( a, b ) {
+          return a + b
+        }
+      })
 
       asyncTask.execute(3,3, function( error, result ) {
         expect( result ).to.equal( 6 )
@@ -21,13 +21,13 @@ describe( 'AsyncTask', function() {
     })
 
     it('should work without webworker and blob support', function( done ) {
-      var asyncTask = new AsyncTask()
+      var asyncTask = new AsyncTask({
+        doInBackground: function( a, b ) {
+          return a + b
+        }
+      })
 
       asyncTask.hasWorkerSupport = function(){ return false }
-
-      asyncTask.doInBackground = function(a,b) {
-        return a + b
-      }
 
       asyncTask.execute( 3, 3, function( error, result ) {
         expect( result ).to.equal( 6 )
@@ -37,11 +37,11 @@ describe( 'AsyncTask', function() {
     })
 
     it('should give error to callback on errors', function( done ) {
-      var asyncTask = new AsyncTask()
-
-      asyncTask.doInBackground = function() {
-        throw new TypeError("LOOL")
-      }
+      var asyncTask = new AsyncTask({
+        doInBackground: function() {
+          throw new TypeError("LOOL")
+        }
+      })
 
       asyncTask.execute(null, function( error, result ) {
         expect( error ).to.be.an( TypeError )
@@ -54,13 +54,12 @@ describe( 'AsyncTask', function() {
   describe('PromiseInterface', function( done ) {
 
     it('should', function( done ) {
-      var asyncTask = new AsyncTask
-
-      asyncTask.asyncInterfaceImplementation = PromiseInterface
-
-      asyncTask.doInBackground = function( a, b ) {
-        return a + b  
-      }
+      var asyncTask = new AsyncTask({
+        asyncInterfaceImplementation: PromiseInterface,
+        doInBackground: function( a, b ) {
+          return a + b  
+        }
+      })
 
       promise = asyncTask.execute( 3, 4 )
 
