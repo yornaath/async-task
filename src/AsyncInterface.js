@@ -5,9 +5,7 @@ module.exports = AsyncInterface
  * @class AsyncInterface
  * @author Jørn Andre Tangen @gorillatron
 */
-function AsyncInterface( callback ) {
-  this.callback = callback
-}
+function AsyncInterface() {}
 
 /*
  * Resolve the AsyncInterface by calling the callback with the passed data
