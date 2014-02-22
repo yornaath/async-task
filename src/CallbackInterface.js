@@ -12,6 +12,7 @@ module.exports = CallbackInterface
 */
 function CallbackInterface( callback ) {
   AsyncInterface.apply( this, arguments )
+  this.callback = callback
 }
 
 inherits( CallbackInterface, AsyncInterface )
@@ -44,4 +45,14 @@ CallbackInterface.prototype.reject = function( error ) {
 */
 CallbackInterface.prototype.throw = function( exception ) {
   return this.reject( exception )
+}
+
+/*
+ * Get the interface implementation
+ * @public
+ * @function
+ * @param {Error} exception
+*/
+AsyncInterface.prototype.getImplementation = function() {
+  return this.callback
 }
