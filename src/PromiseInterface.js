@@ -1,7 +1,7 @@
 var _                 = require( 'underscore' ),
     inherits          = require( 'util' ) .inherits,
-    AsyncInterface    = require( './AsyncInterface' )
-
+    AsyncInterface    = require( './AsyncInterface' ),
+    Promise           = require( 'bluebird' )
 
 module.exports = PromiseInterface
 
@@ -12,9 +12,12 @@ module.exports = PromiseInterface
 */
 function PromiseInterface( callback ) {
   AsyncInterface.apply( this, arguments )
+
+  this.callback = typeof callback == 'function' ? callback : function(){}
+
   this.promise = new Promise(_.bind(function( resolve, reject ) {
-    this.resolvePromise = resolve
-    this.rejectPromise = reject
+    this.__resolve = resolve
+    this.__reject = reject
   }, this))
 }
 
@@ -27,7 +30,8 @@ inherits( PromiseInterface, AsyncInterface )
  * @param {mixed} arguments
 */
 PromiseInterface.prototype.resolve = function() {
-  return this.resolvePromise.apply( this.promise, Array.prototype.slice.call(arguments) )
+  this.callback.apply( {}, [null].concat(Array.prototype.slice.call(arguments)) )
+  return this.__resolve.apply( this.promise, Array.prototype.slice.call(arguments) )
 }
 
 /*
@@ -37,7 +41,8 @@ PromiseInterface.prototype.resolve = function() {
  * @param {object} error
 */
 PromiseInterface.prototype.reject = function( error ) {
-  return this.rejectPromise( error )
+  this.callback.apply( {}, [error] )
+  return this.__reject( error )
 }
 
 /*
@@ -56,6 +61,6 @@ PromiseInterface.prototype.throw = function( exception ) {
  * @function
  * @param {Error} exception
 */
-AsyncInterface.prototype.getInterfaceImplementation = function() {
+AsyncInterface.prototype.getImplementation = function() {
   return this.promise
 }
