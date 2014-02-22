@@ -4,3 +4,4 @@ module.exports = {
   CallbackInterface:  require( './src/CallbackInterface' ),
   PromiseInterface:   require( './src/PromiseInterface' )
 }
+
