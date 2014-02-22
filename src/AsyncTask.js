@@ -1,7 +1,8 @@
 var _                 = require( 'underscore' ),
     inherits          = require( 'util' ) .inherits,
     EventEmitter      = require( 'events' ).EventEmitter,
-    CallbackInterface = require( './CallbackInterface' )
+    CallbackInterface = require( './CallbackInterface' ),
+    BackgroundWorker  = require( './BackgroundWorker' )
 
 
 module.exports = AsyncTask
@@ -33,79 +34,12 @@ inherits( AsyncTask, EventEmitter )
  * @function
 */
 AsyncTask.prototype.setupWorker = function() {
-  if(this.worker)
-    return null
-
-  this.blob = new Blob([
-    this.getWorkerSourcecode()
-  ], { type: "text/javascript" })
-
-  this.worker = new Worker( window.URL.createObjectURL(this.blob) )
-
-  this.worker.onmessage = _.bind( this.workerOnMessageHandler, this )
-  this.worker.onerror = _.bind( this.workerOnErrorHandler, this )
-}
-
-/*
- * Handle worker messages
- * @public
- * @function
- * @event
-*/
-AsyncTask.prototype.workerOnMessageHandler = function( event ) {
-  var data
-
-  data = JSON.parse( event.data )
-  
-  this.emit( 'done', data.result, event )
-}
-
-/*
- * Handle worker error
- * @public
- * @function
- * @event
-*/
-AsyncTask.prototype.workerOnErrorHandler = function( event ) {
-  var message, error, errorType, errorMessage
-
-  event.preventDefault()
-
-  message = event.message
-  error = message.match(/Uncaught\s([a-zA-Z]+)\:(.*)/)
-  
-  try {
-    errorType = typeof eval(error[1]) == 'function' ? eval(error[1]) : Error
-    errorMessage = typeof eval(error[1]) == 'function' ? error[2] : message  
+  if( !this.worker ) {
+    this.worker = new BackgroundWorker()
+    this.worker.define( 'doInBackground', this.doInBackground.toString() )
+    this.worker.start()
   }
-  catch( exception ) {
-    errorType = Error
-    errorMessage = message
-  }
-
-  error = new errorType( errorMessage )
-  
-  this.emit( 'exception', error )
-}
-
-/*
- * Get the source code for the background worker
- * @public
- * @function
- * @returns {string}
-*/
-AsyncTask.prototype.getWorkerSourcecode = function() {
-  return ';(function(){ ' +
-    'var doInBackground = ' + this.doInBackground.toString() + ';' +
-      'this.onmessage = function( event ) { ' +
-        'var data = JSON.parse(event.data); ' +
-        'var args = data.args; ' +
-        'var out = {}; ' +
-        'out.result = doInBackground.apply(this, args); ' +
-        'out.payLoadId = data.payLoadId; ' +
-        'this.postMessage( JSON.stringify(out) ); ' +
-      '}; ' +
-    '}).call( this );';
+  return this.worker
 }
 
 /*
@@ -154,22 +88,9 @@ AsyncTask.prototype.executeOnWorker = function() {
   }
 
   data = {}
-
   data.args = args
   
   asyncInterface = this.asyncInterfaceFactory( callback )
-
-  this.once( 'done', _.bind(function( result ) {
-    asyncInterface.resolve( result )
-  }, this))
-
-  this.once( 'error', _.bind(function( error ) {
-    asyncInterface.reject( error )
-  }, this))
-
-  this.once( 'exception', _.bind(function( error ) {
-    asyncInterface.throw( error )
-  }, this))
 
   try {
     data = JSON.stringify( data )
@@ -178,9 +99,12 @@ AsyncTask.prototype.executeOnWorker = function() {
     asyncInterface.throw( JSONException )
   }
 
-  this.worker.postMessage( data )
+  this.worker.run( 'doInBackground', args )
+    .then( _.bind(asyncInterface.resolve, asyncInterface) )
+    .catch( _.bind(asyncInterface.throw, asyncInterface) )
+    .finally( _.bind(this.worker.terminate, this.worker) )
 
-  return asyncInterface.getInterfaceImplementation()
+  return asyncInterface.getImplementation()
 }
 
 /*
@@ -212,7 +136,7 @@ AsyncTask.prototype.executeOnMainthread = function() {
     asyncInterface.resolve( data )
   }, this), 0)
 
-  return asyncInterface.getInterfaceImplementation()
+  return asyncInterface.getImplementation()
 }
 
 /*
