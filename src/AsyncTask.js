@@ -45,7 +45,7 @@ AsyncTask.prototype.setupWorker = function() {
 /*
  * The async interface this AsyncTask implementation supports
  * @public
- * @class
+ * @type {AsyncInterface}
 */
 AsyncTask.prototype.asyncInterfaceImplementation = CallbackInterface
 
@@ -73,6 +73,7 @@ AsyncTask.prototype.hasWorkerSupport = function() {
  * Execute the background job on a worker
  * @public
  * @function
+ * @returns {AsyncInterface}
 */
 AsyncTask.prototype.executeOnWorker = function() {
   var args, data, asyncInterface
@@ -111,6 +112,7 @@ AsyncTask.prototype.executeOnWorker = function() {
  * Execute the background job on the main thread.
  * @public
  * @function
+ * @returns {AsyncInterface}
 */
 AsyncTask.prototype.executeOnMainthread = function() {
   var args, data
@@ -143,6 +145,7 @@ AsyncTask.prototype.executeOnMainthread = function() {
  * Execute the task
  * @public
  * @function
+ * @returns {AsyncInterface}
 */
 AsyncTask.prototype.execute = function( callback ) {
   if( this.__hasExecuted ) {

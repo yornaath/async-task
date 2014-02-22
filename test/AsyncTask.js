@@ -73,6 +73,17 @@ describe( 'AsyncTask', function() {
       })
     })
 
+    it('should throw catchable errors', function( done ) {
+      asyncTask.doInBackground = function(){
+        return willThrowReferenceError
+      }
+      asyncTask.execute()
+        .catch(function( error ) {
+          expect (error ).to.be.a( ReferenceError )
+          done()
+        })
+    })
+
     it('should work with callback too', function( done ) {
       asyncTask.execute( 4, 4, function( error, result ) {
         expect( result ).to.equal( 8 )

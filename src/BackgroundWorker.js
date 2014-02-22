@@ -25,7 +25,7 @@ inherits( BackgroundWorker, EventEmitter )
 /*
  * The async interface this BackgroundWorker implementation supports
  * @public
- * @class
+ * @type {AsyncInterface}
 */
 BackgroundWorker.prototype.asyncInterfaceImplementation = PromiseInterface
 
@@ -94,6 +94,7 @@ BackgroundWorker.prototype.define = function( key, val ) {
  * @param {string} command - command to run
  * @param {array} args - arguemnts to apply to command
  * @param {function} calback
+ * @returns {AsyncInterface}
 */
 BackgroundWorker.prototype.run = function( command, args, callback ) {
   var messageId, message, asyncInterface
