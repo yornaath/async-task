@@ -90,7 +90,7 @@ AsyncTask.prototype.executeOnWorker = function() {
 
   data = {}
   data.args = args
-  
+
   asyncInterface = this.asyncInterfaceFactory( callback )
 
   try {
@@ -124,7 +124,7 @@ AsyncTask.prototype.executeOnMainthread = function() {
     args =   Array.prototype.slice.call( arguments)
     callback = null
   }
-  
+
   asyncInterface = this.asyncInterfaceFactory( callback )
 
   try {
@@ -159,5 +159,3 @@ AsyncTask.prototype.execute = function( callback ) {
   return this.hasWorkerSupport() ? this.executeOnWorker.apply( this, arguments ) :
                                    this.executeOnMainthread.apply( this, arguments )
 }
-
-

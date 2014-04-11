@@ -3,7 +3,7 @@ var AsyncTask         = require( '../index' ).AsyncTask,
 
 
 describe( 'AsyncTask', function() {
-  
+
   describe('AsyncTask#execute', function() {
 
     it('should call the callback with the result of the doInBackground function', function( done ) {
@@ -50,7 +50,7 @@ describe( 'AsyncTask', function() {
     })
 
   })
-  
+
   describe('PromiseInterface', function( done ) {
 
     var asyncTask
@@ -59,7 +59,7 @@ describe( 'AsyncTask', function() {
       asyncTask = new AsyncTask({
         asyncInterfaceImplementation: PromiseInterface,
         doInBackground: function( a, b ) {
-          return a + b  
+          return a + b
         }
       })
     })
@@ -94,4 +94,3 @@ describe( 'AsyncTask', function() {
   })
 
 })
-
