@@ -6,7 +6,7 @@ var _                 = require( 'underscore' ),
 module.exports = PromiseInterface
 
 /*
- * @class CallbackInterface
+ * @class PromiseInterface
  * @extends AsyncInterfance
  * @author Jørn Andre Tangen @gorillatron
 */

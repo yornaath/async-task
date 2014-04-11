@@ -8,7 +8,7 @@ var _                 = require( 'underscore' ),
 module.exports = AsyncTask
 
 /*
- * @class DateFilter
+ * @class AsyncTask
  * @extends EventEmitter
  * @author Jørn Andre Tangen @gorillatron
 */
