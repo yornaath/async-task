@@ -21,7 +21,11 @@
   "homepage": "https://github.com/gorillatron/AsyncTask",
   "dependencies": {
     "underscore": "~1.6.0",
-    "bluebird": "~1.0.5"
+    "bluebird": "^1.2.2",
+    "browserify": "^3.41.0",
+    "karma-browserify": "^0.2.0",
+    "karma-mocha": "^0.1.3",
+    "karma-expect": "^1.1.0"
   },
   "devDependencies": {
     "mocha": "~1.17.1",
