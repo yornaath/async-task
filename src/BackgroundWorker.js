@@ -14,6 +14,8 @@ module.exports = BackgroundWorker
 function BackgroundWorker( source ) {
   EventEmitter.apply( this, arguments )
 
+  this.worker = null
+
   this.asyncInterfaces = {}
   this.definitions = []
   this.messageId = 0
@@ -21,6 +23,17 @@ function BackgroundWorker( source ) {
 }
 
 inherits( BackgroundWorker, EventEmitter )
+
+/*
+ * Check WebWorker support
+ * @static
+ * @returns {boolean}
+*/
+BackgroundWorker.hasWorkerSupport = function() {
+  return (typeof window.Worker !== 'undefined' && typeof window.Blob !== 'undefined')
+         &&
+         (typeof window.URL.createObjectURL == 'function')
+}
 
 /*
  * The async interface this BackgroundWorker implementation supports
@@ -45,6 +58,9 @@ BackgroundWorker.prototype.asyncInterfaceFactory = function( callback ) {
  * @function
 */
 BackgroundWorker.prototype.start = function() {
+  if( this.worker )
+    throw new Error( 'cannot start allready started BackgroundWorker' )
+
   this.blob = new Blob([
     this.getWorkerSourcecode()
   ], { type: "text/javascript" })
@@ -120,7 +136,7 @@ BackgroundWorker.prototype.workerOnMessageHandler = function( event ) {
 
   data = JSON.parse( event.data )
   asyncInterface = this.asyncInterfaces[ data.messageId ]
-  
+
   if( data.exception )
     return asyncInterface.throw( this.createExceptionFromMessage( data.exception ) )
 
@@ -164,10 +180,10 @@ BackgroundWorker.prototype.workerOnErrorHandler = function( event ) {
 
   message = event.message
   error = message.match(/Uncaught\s([a-zA-Z]+)\:(.*)/)
-  
+
   try {
     errorType = typeof eval(error[1]) == 'function' ? eval(error[1]) : Error
-    errorMessage = typeof eval(error[1]) == 'function' ? error[2] : message  
+    errorMessage = typeof eval(error[1]) == 'function' ? error[2] : message
   }
   catch( exception ) {
     errorType = Error
@@ -175,7 +191,7 @@ BackgroundWorker.prototype.workerOnErrorHandler = function( event ) {
   }
 
   error = new errorType( errorMessage )
-  
+
   this.emit( 'exception', error )
 }
 

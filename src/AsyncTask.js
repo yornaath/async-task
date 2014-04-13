@@ -60,16 +60,6 @@ AsyncTask.prototype.asyncInterfaceFactory = function( callback ) {
 }
 
 /*
- * Check if there is support for web workers and blobs
- * @public
- * @function
- * @returns {boolean}
-*/
-AsyncTask.prototype.hasWorkerSupport = function() {
-  return typeof window.Worker !== 'undefined' && typeof window.Blob !== 'undefined'
-}
-
-/*
  * Execute the background job on a worker
  * @public
  * @function
@@ -156,6 +146,6 @@ AsyncTask.prototype.execute = function( callback ) {
 
   this.emit( 'execute', arguments )
 
-  return this.hasWorkerSupport() ? this.executeOnWorker.apply( this, arguments ) :
-                                   this.executeOnMainthread.apply( this, arguments )
+  return BackgroundWorker.hasWorkerSupport() ? this.executeOnWorker.apply( this, arguments ) :
+                                               this.executeOnMainthread.apply( this, arguments )
 }
