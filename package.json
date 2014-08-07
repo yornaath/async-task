@@ -1,7 +1,7 @@
 {
   "name": "asynctask",
-  "version": "0.0.0",
-  "description": "",
+  "version": "0.1.0",
+  "description": "Execute tasks on web Workers without seperate files.",
   "main": "index.js",
   "directories": {
     "test": "test"

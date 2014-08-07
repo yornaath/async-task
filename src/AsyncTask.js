@@ -17,16 +17,28 @@ function AsyncTask( options ) {
 
   options = typeof options != 'undefined' ? options : {}
   this.__hasExecuted = false
+  this.__boundArguments = []
 
   if( options.doInBackground )
     this.doInBackground = options.doInBackground
   if( options.asyncInterfaceImplementation )
-    this.asyncInterfaceImplementation = options.asyncInterfaceImplementation
+    this.asyncInterfaceImplementation = options.asyncInterfaceImplementation || AsyncTask.defaults.asyncInterfaceImplementation
 }
 
 
 inherits( AsyncTask, EventEmitter )
 
+/*
+ * Default options for new AsyncTasks
+ * @static
+ * @public
+ * @object
+ * @property {object}           defaults                              - The default values for new AsyncTask's.
+ * @property {AsyncInterface}   defaults.asyncInterfaceImplementation - The interface implementation to use for all new AsyncTasks
+*/
+AsyncTask.defaults = {
+  asyncInterfaceImplementation: CallbackInterface
+}
 
 /*
  * Identity object for unset values
@@ -105,7 +117,7 @@ AsyncTask.prototype.executeOnWorker = function() {
  * @returns {AsyncInterface}
 */
 AsyncTask.prototype.executeOnMainthread = function() {
-  var args, data
+  var args, data, asyncInterface
 
   args = Array.prototype.slice.call( arguments, 0, arguments.length - 1 )
   callback = arguments[ arguments.length - 1 ]
@@ -138,6 +150,8 @@ AsyncTask.prototype.executeOnMainthread = function() {
  * @returns {AsyncInterface}
 */
 AsyncTask.prototype.execute = function( callback ) {
+  var args
+
   if( this.__hasExecuted ) {
     throw new Error( 'Cannot execute a allready executed AsyncTask' )
   }
@@ -146,6 +160,27 @@ AsyncTask.prototype.execute = function( callback ) {
 
   this.emit( 'execute', arguments )
 
-  return BackgroundWorker.hasWorkerSupport() ? this.executeOnWorker.apply( this, arguments ) :
-                                               this.executeOnMainthread.apply( this, arguments )
+  if( this.__boundArguments ) {
+    args = this.__boundArguments.concat( Array.prototype.slice.call( arguments ) )
+  }
+  else {
+    args = Array.prototype.slice.call( arguments )
+  }
+
+  return BackgroundWorker.hasWorkerSupport() ? this.executeOnWorker.apply( this, args ) :
+                                               this.executeOnMainthread.apply( this, args )
+}
+
+AsyncTask.prototype.bind = function() {
+  this.__boundArguments = Array.prototype.slice.call( arguments )
+}
+
+AsyncTask.prototype.map = function( array ) {
+  return _.map( array, _.bind(function( value ) {
+    var task = new AsyncTask({
+      doInBackground: this.doInBackground
+    })
+    task.bind( value )
+    return task
+  }, this))
 }

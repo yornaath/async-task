@@ -51,9 +51,35 @@ describe( 'AsyncTask', function() {
 
   })
 
+  describe('AsyncTask#bind', function() {
+
+    it('should bind the variables the task should be executed with', function() {
+      var asyncTask = new AsyncTask({
+        doInBackground: function( a, b ) {
+          return a + b
+        }
+      })
+
+      asyncTask.bind(10, 12)
+
+      asyncTask.execute(function( error, result ) {
+        expect( result ).to.equal( 22 )
+        done()
+      })
+    })
+
+  })
+
   describe('PromiseInterface', function( done ) {
 
-    var asyncTask
+    var asyncTask, originalAsyncImplementation
+
+    originalAsyncImplementation = AsyncTask.defaults.asyncInterfaceImplementation
+    AsyncTask.defaults.asyncInterfaceImplementation = PromiseInterface
+
+    after(function() {
+      AsyncTask.defaults.asyncInterfaceImplementation = originalAsyncImplementation
+    })
 
     beforeEach(function() {
       asyncTask = new AsyncTask({
