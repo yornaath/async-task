@@ -5,7 +5,7 @@ Execute tasks on web Workers without seperate files.
 
 ```javascript
 var AsyncTask = require( 'async-task' ).AsyncTask
-    
+
 var task = new AsyncTask({
   doInBackground: function( a, b ) {
     return a + b
@@ -37,5 +37,5 @@ task
     result === 3
   })
   .error( handleError )
-  .catch( handleException) 
+  .catch( handleException)
 ```

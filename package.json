@@ -1,5 +1,5 @@
 {
-  "name": "asynctask",
+  "name": "async-task",
   "version": "0.1.0",
   "description": "Execute tasks on web Workers without seperate files.",
   "main": "index.js",
@@ -14,7 +14,7 @@
     "url": "https://github.com/gorillatron/AsyncTask.git"
   },
   "author": "",
-  "license": "BSD-2-Clause",
+  "license": "NONE",
   "bugs": {
     "url": "https://github.com/gorillatron/AsyncTask/issues"
   },
