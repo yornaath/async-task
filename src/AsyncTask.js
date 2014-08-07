@@ -22,7 +22,7 @@ function AsyncTask( options ) {
   if( options.doInBackground )
     this.doInBackground = options.doInBackground
   if( options.asyncInterfaceImplementation )
-    this.asyncInterfaceImplementation = options.asyncInterfaceImplementation || AsyncTask.defaults.asyncInterfaceImplementation
+    this.asyncInterfaceImplementation = options.asyncInterface || AsyncTask.defaults.asyncInterface
 }
 
 
@@ -37,7 +37,7 @@ inherits( AsyncTask, EventEmitter )
  * @property {AsyncInterface}   defaults.asyncInterfaceImplementation - The interface implementation to use for all new AsyncTasks
 */
 AsyncTask.defaults = {
-  asyncInterfaceImplementation: CallbackInterface
+  asyncInterface: CallbackInterface
 }
 
 /*

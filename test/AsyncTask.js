@@ -75,10 +75,10 @@ describe( 'AsyncTask', function() {
     var asyncTask, originalAsyncImplementation
 
     originalAsyncImplementation = AsyncTask.defaults.asyncInterfaceImplementation
-    AsyncTask.defaults.asyncInterfaceImplementation = PromiseInterface
+    AsyncTask.defaults.asyncInterface = PromiseInterface
 
     after(function() {
-      AsyncTask.defaults.asyncInterfaceImplementation = originalAsyncImplementation
+      AsyncTask.defaults.asyncInterface = originalAsyncImplementation
     })
 
     beforeEach(function() {
