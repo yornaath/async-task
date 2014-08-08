@@ -1,6 +1,6 @@
 {
   "name": "async-task",
-  "version": "0.1.0RC2",
+  "version": "0.1.1",
   "description": "Execute tasks on web Workers without seperate files.",
   "main": "index.js",
   "directories": {
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/gorillatron/AsyncTask.git"
+    "url": "https://github.com/gorillatron/async-task.git"
   },
   "author": "",
   "license": "NONE",
   "bugs": {
-    "url": "https://github.com/gorillatron/AsyncTask/issues"
+    "url": "https://github.com/gorillatron/async-task/issues"
   },
-  "homepage": "https://github.com/gorillatron/AsyncTask",
+  "homepage": "https://github.com/gorillatron/async-task",
   "dependencies": {
     "underscore": "~1.6.0",
     "bluebird": "^1.2.2",
