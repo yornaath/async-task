@@ -1,6 +1,6 @@
 {
   "name": "async-task",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Execute tasks on web Workers without seperate files.",
   "main": "index.js",
   "directories": {

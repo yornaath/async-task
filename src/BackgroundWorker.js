@@ -15,7 +15,7 @@ function BackgroundWorker( source ) {
   EventEmitter.apply( this, arguments )
 
   this.worker = null
-
+  this.importScripts = []
   this.asyncInterfaces = {}
   this.definitions = []
   this.messageId = 0
@@ -30,9 +30,7 @@ inherits( BackgroundWorker, EventEmitter )
  * @returns {boolean}
 */
 BackgroundWorker.hasWorkerSupport = function() {
-  return (typeof window.Worker !== 'undefined' && typeof window.Blob !== 'undefined')
-         &&
-         (typeof window.URL.createObjectURL == 'function')
+  return (typeof window.Worker !== 'undefined' && typeof window.Blob !== 'undefined') && (typeof window.URL.createObjectURL == 'function')
 }
 
 /*
@@ -135,6 +133,8 @@ BackgroundWorker.prototype.workerOnMessageHandler = function( event ) {
   var data, asyncInterface
 
   data = JSON.parse( event.data )
+
+
   asyncInterface = this.asyncInterfaces[ data.messageId ]
 
   if( data.exception )
@@ -204,7 +204,12 @@ BackgroundWorker.prototype.workerOnErrorHandler = function( event ) {
 BackgroundWorker.prototype.getWorkerSourcecode = function() {
   var src
 
-  src = " var definitions = {};"
+  src = ""
+
+  if( this.importScripts.length )
+    src += "importScripts( '" + this.importScripts.join("','") + "' );\n"
+
+  src += " var definitions = {};"
 
   _.forEach(this.definitions, function( definition ) {
     src += " definitions['" + definition.key + "'] = " + definition.val + ";"

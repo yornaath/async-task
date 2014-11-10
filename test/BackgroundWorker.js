@@ -11,7 +11,7 @@ describe( 'BackgroundWorker', function() {
       worker = new BackgroundWorker()
 
       worker.start()
-      
+
       expect(function(){ worker.start() })
         .to.throwException()
     })

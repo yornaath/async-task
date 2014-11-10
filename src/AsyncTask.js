@@ -19,10 +19,11 @@ function AsyncTask( options ) {
   this.__hasExecuted = false
   this.__boundArguments = []
 
-  if( options.doInBackground )
-    this.doInBackground = options.doInBackground
+  this.doInBackground = options.doInBackground ? options.doInBackground : null
+  this.importScripts = options.importScripts ? options.importScripts : []
   if( options.asyncInterfaceImplementation )
     this.asyncInterfaceImplementation = options.asyncInterface || AsyncTask.defaults.asyncInterface
+
 }
 
 
@@ -47,7 +48,8 @@ AsyncTask.defaults = {
 */
 AsyncTask.prototype.setupWorker = function() {
   if( !this.worker ) {
-    this.worker = new BackgroundWorker()
+    this.worker = new BackgroundWorker({})
+    this.worker.importScripts = this.importScripts
     this.worker.define( 'doInBackground', this.doInBackground.toString() )
     this.worker.start()
   }
@@ -78,7 +80,7 @@ AsyncTask.prototype.asyncInterfaceFactory = function( callback ) {
  * @returns {AsyncInterface}
 */
 AsyncTask.prototype.executeOnWorker = function() {
-  var args, data, asyncInterface
+  var args, callback, data, asyncInterface
 
   this.setupWorker()
 
@@ -116,29 +118,74 @@ AsyncTask.prototype.executeOnWorker = function() {
  * @function
  * @returns {AsyncInterface}
 */
-AsyncTask.prototype.executeOnMainthread = function() {
-  var args, data, asyncInterface
+AsyncTask.prototype.executeOnIFrame = function() {
+  var args, callback, asyncInterface, iframe, script, code
 
   args = Array.prototype.slice.call( arguments, 0, arguments.length - 1 )
   callback = arguments[ arguments.length - 1 ]
 
   if( typeof callback != 'function' ){
-    args =   Array.prototype.slice.call( arguments)
+    args =   Array.prototype.slice.call( arguments )
     callback = null
   }
 
   asyncInterface = this.asyncInterfaceFactory( callback )
 
-  try {
-    data = this.doInBackground.apply({}, args)
-  }
-  catch( exception ) {
-    asyncInterface.throw( exception )
-  }
+  iframe = document.createElement( 'iframe' )
+  script = document.createElement( 'script' )
 
-  setTimeout( _.bind(function(){
-    asyncInterface.resolve( data )
-  }, this), 0)
+  code = ""
+
+  code += "var domain = '" + location.protocol + "//" + location.host + "';"
+  code += "var importScripts = " + JSON.stringify(this.importScripts) + ";"
+  code += "var args = " + JSON.stringify(args) + ";"
+  code += "var doInBackground = " + this.doInBackground.toString() + ";"
+
+  code += ";(" + function(){
+
+    var _doInBackground = function(){
+      try {
+        var res = doInBackground.apply({}, args)
+        postMessage({ event: 'result', data: res }, domain)
+      }
+      catch (exception) {
+        postMessage({ event: 'exception', data: exception.message }, domain)
+      }
+    }
+
+    if( importScripts.length > 0 ) {
+      var loaded = 0
+      for (var i = 0; i < importScripts.length; i++) {
+        var script = document.createElement('script')
+        script.onload = function() {
+          loaded += 1
+          if( loaded === importScripts.length )
+            _doInBackground()
+        }
+        document.body.appendChild( script )
+        script.src = importScripts[i]
+      }
+    }
+    else {
+      _doInBackground()
+    }
+
+  }.toString() + ").call(window);"
+
+  script.innerHTML = code
+
+  window.document.body.appendChild( iframe )
+
+  iframe.contentWindow.addEventListener('message', function( message ) {
+    if( message.data.event === 'exception') {
+      asyncInterface.throw( new Error(message.data.data) )
+    }
+    else {
+      asyncInterface.resolve( message.data.data )
+    }
+  })
+
+  iframe.contentDocument.body.appendChild( script )
 
   return asyncInterface.getImplementation()
 }
@@ -167,8 +214,12 @@ AsyncTask.prototype.execute = function( callback ) {
     args = Array.prototype.slice.call( arguments )
   }
 
-  return BackgroundWorker.hasWorkerSupport() ? this.executeOnWorker.apply( this, args ) :
-                                               this.executeOnMainthread.apply( this, args )
+  return this.hasWorkerSupport() ? this.executeOnWorker.apply( this, args ) :
+                                   this.executeOnIFrame.apply( this, args )
+}
+
+AsyncTask.prototype.hasWorkerSupport = function(){
+  return BackgroundWorker.hasWorkerSupport()
 }
 
 AsyncTask.prototype.bind = function() {
