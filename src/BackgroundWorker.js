@@ -215,7 +215,7 @@ BackgroundWorker.prototype.getWorkerSourcecode = function() {
     src += " definitions['" + definition.key + "'] = " + definition.val + ";"
   })
 
-  src += "this.onmessage = function( event ) {  " +
+  src += "self.onmessage = function( event ) {  " +
            "var data = JSON.parse(event.data);" +
            "try {" +
               "var result = definitions[data.command].apply(this, data.args);" +

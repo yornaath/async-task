@@ -134,6 +134,9 @@ AsyncTask.prototype.executeOnIFrame = function() {
   iframe = document.createElement( 'iframe' )
   script = document.createElement( 'script' )
 
+  if( !iframe.style ) iframe.style = {}
+  iframe.style.display = 'none';
+
   code = ""
 
   code += "var domain = '" + location.protocol + "//" + location.host + "';"
@@ -224,14 +227,4 @@ AsyncTask.prototype.hasWorkerSupport = function(){
 
 AsyncTask.prototype.bind = function() {
   this.__boundArguments = Array.prototype.slice.call( arguments )
-}
-
-AsyncTask.prototype.map = function( array ) {
-  return _.map( array, _.bind(function( value ) {
-    var task = new AsyncTask({
-      doInBackground: this.doInBackground
-    })
-    task.bind( value )
-    return task
-  }, this))
 }
