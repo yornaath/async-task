@@ -30,7 +30,10 @@ module.exports = function(config) {
 
     ],
 
-
+    client: {
+      captureConsole: true
+    },
+    
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
     reporters: [ 'progress', 'osx' ],

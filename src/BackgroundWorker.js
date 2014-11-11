@@ -1,7 +1,7 @@
 var _                 = require( 'underscore' ),
+    Promise           = require( 'bluebird' ),
     inherits          = require( 'util' ) .inherits,
-    EventEmitter      = require( 'events' ).EventEmitter,
-    PromiseInterface  = require( './PromiseInterface' )
+    EventEmitter      = require( 'events' ).EventEmitter
 
 
 module.exports = BackgroundWorker
@@ -15,10 +15,13 @@ function BackgroundWorker( source ) {
   EventEmitter.apply( this, arguments )
 
   this.worker = null
+  this.iframe = null
+  this._isStarted = false
   this.importScripts = []
-  this.asyncInterfaces = {}
+  this.messagehandlers = {}
   this.definitions = []
   this.messageId = 0
+  this.domain = location.protocol + "//" + location.host
 
 }
 
@@ -34,31 +37,31 @@ BackgroundWorker.hasWorkerSupport = function() {
 }
 
 /*
- * The async interface this BackgroundWorker implementation supports
- * @public
- * @type {AsyncInterface}
-*/
-BackgroundWorker.prototype.asyncInterfaceImplementation = PromiseInterface
-
-/*
- * Create a new AsyncInterface for this BackgroundWorker
- * @public
- * @function
- * @returns {AsyncInterface}
-*/
-BackgroundWorker.prototype.asyncInterfaceFactory = function( callback ) {
-  return new this.asyncInterfaceImplementation( callback )
-}
-
-/*
  * Start the worker
  * @public
  * @function
 */
 BackgroundWorker.prototype.start = function() {
-  if( this.worker )
+  if( this._isStarted )
     throw new Error( 'cannot start allready started BackgroundWorker' )
 
+  this._isStarted = true
+
+  if( BackgroundWorker.hasWorkerSupport() ) {
+    this.setupWebWorker()
+  }
+  else {
+    this.setupIframe()
+  }
+  return this
+}
+
+/*
+ * Setup a Worker
+ * @public
+ * @function
+*/
+BackgroundWorker.prototype.setupWebWorker = function() {
   this.blob = new Blob([
     this.getWorkerSourcecode()
   ], { type: "text/javascript" })
@@ -67,8 +70,78 @@ BackgroundWorker.prototype.start = function() {
 
   this.worker.onmessage = _.bind( this.workerOnMessageHandler, this )
   this.worker.onerror = _.bind( this.workerOnErrorHandler, this )
+}
 
-  return this
+/*
+ * Setup a Iframe
+ * @public
+ * @function
+*/
+BackgroundWorker.prototype.setupIframe = function() {
+  var script, src
+
+  this.iframe = document.createElement( 'iframe' )
+
+  script = document.createElement( 'script' )
+
+  if( !this.iframe.style ) this.iframe.style = {}
+  this.iframe.style.display = 'none';
+
+  src = ""
+
+  src += "var domain = '" + this.domain + "';\n"
+  src += "var importScripts = " + JSON.stringify(this.importScripts) + ";\n"
+  src += "var definitions = {};\n"
+
+  _.forEach(this.definitions, function( definition ) {
+    src += " definitions['" + definition.key + "'] = " + definition.val + ";\n"
+  })
+
+  src += ";(" + function(){
+
+    if( importScripts.length > 0 ) {
+      var loaded = 0
+      for (var i = 0; i < importScripts.length; i++) {
+        var script = document.createElement('script')
+        script.onload = function() {
+          loaded += 1
+          if( loaded === importScripts.length )
+            _doInBackground()
+        }
+        document.body.appendChild( script )
+        script.src = importScripts[i]
+      }
+    }
+    else {
+
+    }
+
+    self.onmessage = function( event ) {
+      var data = JSON.parse(event.data);
+      if( data.result )
+        return
+      try {
+        var result = definitions[data.command].apply(this, data.args);
+        var out = { messageId: data.messageId, result: result };
+        postMessage( JSON.stringify(out), domain );
+      }
+      catch( exception ) {
+        var message = { messageId: data.messageId, exception: { type: exception.name, message: exception.message } };
+        postMessage( JSON.stringify(message), domain );
+      }
+    }
+
+
+  }.toString() + ")();\n"
+
+  script.innerHTML = src
+
+  window.document.body.appendChild( this.iframe )
+
+  this.iframe.contentWindow.addEventListener( 'message', _.bind( this.iframeOnMessageHandler, this ) )
+
+  this.iframe.contentDocument.body.appendChild( script )
+
 }
 
 /*
@@ -77,9 +150,14 @@ BackgroundWorker.prototype.start = function() {
  * @function
 */
 BackgroundWorker.prototype.terminate = function() {
-  if( !this.worker )
-    throw new Error('BackgroundWorker has no worker to terminate')
-  return this.worker.terminate()
+  if( BackgroundWorker.hasWorkerSupport() ) {
+    if( !this.worker )
+      throw new Error('BackgroundWorker has no worker to terminate')
+    return this.worker.terminate()
+  }
+  else if( this.iframe ){
+    this.iframe.remove()
+  }
 }
 
 /*
@@ -111,16 +189,29 @@ BackgroundWorker.prototype.define = function( key, val ) {
  * @returns {AsyncInterface}
 */
 BackgroundWorker.prototype.run = function( command, args, callback ) {
-  var messageId, message, asyncInterface
+  var messageId, message, handler, task, worker
 
   messageId = this.getUniqueMessageId()
   message = { command: command, args: args, messageId: messageId }
-  asyncInterface = this.asyncInterfaceFactory( callback )
 
-  this.worker.postMessage( JSON.stringify(message) )
-  this.asyncInterfaces[ messageId ] = asyncInterface
+  handler = {}
 
-  return asyncInterface.getImplementation()
+  task = new Promise(function(resolve, reject) {
+    handler.resolve = resolve
+    handler.reject = reject
+  })
+
+  this.messagehandlers[ messageId ] = handler
+
+  if( BackgroundWorker.hasWorkerSupport() ) {
+    this.worker.postMessage( JSON.stringify(message) )
+  }
+  else {
+    this.iframe.contentWindow.postMessage( JSON.stringify(message), this.domain )
+  }
+
+
+  return task
 }
 
 /*
@@ -130,18 +221,40 @@ BackgroundWorker.prototype.run = function( command, args, callback ) {
  * @event
 */
 BackgroundWorker.prototype.workerOnMessageHandler = function( event ) {
-  var data, asyncInterface
+  var data, messagehandler
 
   data = JSON.parse( event.data )
 
-
-  asyncInterface = this.asyncInterfaces[ data.messageId ]
+  messagehandler = this.messagehandlers[ data.messageId ]
 
   if( data.exception )
-    return asyncInterface.throw( this.createExceptionFromMessage( data.exception ) )
+    return messagehandler.reject( this.createExceptionFromMessage( data.exception ) )
 
-  asyncInterface.resolve( data.result )
+  messagehandler.resolve( data.result )
 }
+
+/*
+ * Handle iframe messages
+ * @public
+ * @function
+ * @event
+*/
+BackgroundWorker.prototype.iframeOnMessageHandler = function( event ) {
+  var data, messagehandler
+
+  data = JSON.parse( event.data )
+
+  if(data.command) return null
+
+  messagehandler = this.messagehandlers[ data.messageId ]
+
+  if( data.exception )
+    return messagehandler.reject( this.createExceptionFromMessage( data.exception ) )
+
+  messagehandler.resolve( data.result )
+
+}
+
 
 /*
  * Create a exception by an obect describing it
