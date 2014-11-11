@@ -33,7 +33,7 @@ describe( 'AsyncTask', function() {
 
     it('should import scripts', function( done ) {
       var asyncTask = new AsyncTask({
-        importScripts: ["http://localhost:9876/base/test/import.js"],
+        importScripts: [location.protocol + "//" + location.host + "/base/test/import.js"],
         doInBackground: function() {
           return importedFunc()
         }

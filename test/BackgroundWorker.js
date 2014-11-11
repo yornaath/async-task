@@ -46,11 +46,10 @@ describe( 'BackgroundWorker', function() {
     })
 
     it('should import scripts', function( done ) {
-
       var worker
 
       worker = new BackgroundWorker({
-        importScripts: ["http://localhost:9876/base/test/import.js"],
+        importScripts: [location.protocol + "//" + location.host + "/base/test/import.js"],
       })
 
       worker.define('func', function(){ return importedFunc() }.toString())
