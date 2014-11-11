@@ -108,19 +108,20 @@ BackgroundWorker.prototype.setupIframe = function() {
         callback()
       }
       else if( importScripts.length > 0 ) {
-        var loaded = 0
-        for (var i = 0; i < importScripts.length; i++) {
+        function next() {
+          var src = importScripts.shift()
+          if(!src) {
+            alloaded = true
+            return callback()
+          }
           var script = document.createElement('script')
           script.onload = function() {
-            loaded += 1
-            if( loaded === importScripts.length ) {
-              alloaded = true
-              callback()
-            }
+            next()
           }
           document.body.appendChild( script )
-          script.src = importScripts[i]
+          script.src = src
         }
+        next()
       }
       else {
         alloaded = true
