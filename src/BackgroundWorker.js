@@ -101,32 +101,23 @@ BackgroundWorker.prototype.setupIframe = function() {
 
   src += ";(" + function(){
 
-    var alloaded = false
-
     function loadScripts( callback ) {
-      if( alloaded ) {
-        callback()
-      }
-      else if( importScripts.length > 0 ) {
-        function next() {
-          var src = importScripts.shift()
-          if(!src) {
-            alloaded = true
-            return callback()
-          }
-          var script = document.createElement('script')
-          script.onload = function() {
-            next()
-          }
-          document.body.appendChild( script )
-          script.src = src
+      var alloaded = false
+
+      function next() {
+        var src = importScripts.shift()
+        if(alloaded || !src) {
+          alloaded = true
+          return callback()
         }
-        next()
+        var script = document.createElement('script')
+        script.onload = function() {
+          next()
+        }
+        document.body.appendChild( script )
+        script.src = src
       }
-      else {
-        alloaded = true
-        callback()
-      }
+      next()
     }
 
 
