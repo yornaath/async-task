@@ -11,13 +11,15 @@ module.exports = BackgroundWorker
  * @extends EventEmitter
  * @author Jørn Andre Tangen @gorillatron
 */
-function BackgroundWorker( source ) {
+function BackgroundWorker( spec ) {
   EventEmitter.apply( this, arguments )
+
+  spec = spec ? spec : {}
 
   this.worker = null
   this.iframe = null
   this._isStarted = false
-  this.importScripts = []
+  this.importScripts = spec.importScripts || []
   this.messagehandlers = {}
   this.definitions = []
   this.messageId = 0
@@ -99,36 +101,49 @@ BackgroundWorker.prototype.setupIframe = function() {
 
   src += ";(" + function(){
 
-    if( importScripts.length > 0 ) {
-      var loaded = 0
-      for (var i = 0; i < importScripts.length; i++) {
-        var script = document.createElement('script')
-        script.onload = function() {
-          loaded += 1
-          if( loaded === importScripts.length )
-            _doInBackground()
+    var alloaded = false
+
+    function loadScripts( callback ) {
+      if( alloaded ) {
+        callback()
+      }
+      else if( importScripts.length > 0 ) {
+        var loaded = 0
+        for (var i = 0; i < importScripts.length; i++) {
+          var script = document.createElement('script')
+          script.onload = function() {
+            loaded += 1
+            if( loaded === importScripts.length ) {
+              alloaded = true
+              callback()
+            }
+          }
+          document.body.appendChild( script )
+          script.src = importScripts[i]
         }
-        document.body.appendChild( script )
-        script.src = importScripts[i]
+      }
+      else {
+        alloaded = true
+        callback()
       }
     }
-    else {
 
-    }
 
     self.onmessage = function( event ) {
       var data = JSON.parse(event.data);
-      if( data.result )
-        return
-      try {
-        var result = definitions[data.command].apply(this, data.args);
-        var out = { messageId: data.messageId, result: result };
-        postMessage( JSON.stringify(out), domain );
-      }
-      catch( exception ) {
-        var message = { messageId: data.messageId, exception: { type: exception.name, message: exception.message } };
-        postMessage( JSON.stringify(message), domain );
-      }
+      loadScripts(function() {
+        if( data.result )
+          return
+        try {
+          var result = definitions[data.command].apply(this, data.args);
+          var out = { messageId: data.messageId, result: result };
+          postMessage( JSON.stringify(out), domain );
+        }
+        catch( exception ) {
+          var message = { messageId: data.messageId, exception: { type: exception.name, message: exception.message } };
+          postMessage( JSON.stringify(message), domain );
+        }
+      })
     }
 
 

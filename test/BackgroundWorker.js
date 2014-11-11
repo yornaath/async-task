@@ -29,7 +29,7 @@ describe( 'BackgroundWorker', function() {
       BackgroundWorker.hasWorkerSupport = BackgroundWorker._oriHasWorkerSupport
     })
 
-    it('Should', function( done ) {
+    it('Should run', function( done ) {
       var worker
 
       worker = new BackgroundWorker()
@@ -43,6 +43,24 @@ describe( 'BackgroundWorker', function() {
         done()
       })
 
+    })
+
+    it('should import scripts', function( done ) {
+
+      var worker
+
+      worker = new BackgroundWorker({
+        importScripts: ["http://localhost:9876/base/test/import.js"],
+      })
+
+      worker.define('func', function(){ return importedFunc() }.toString())
+
+      worker.start()
+
+      worker.run('func').then(function( res ) {
+        expect(res).to.equal('imported')
+        done()
+      })
     })
 
   })
