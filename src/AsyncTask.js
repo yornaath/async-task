@@ -16,13 +16,13 @@ function AsyncTask( options ) {
 
   options = typeof options != 'undefined' ? options : {}
   this.__hasExecuted = false
+  this.__keepAlive = options.keepAlive
   this.__boundArguments = []
 
   this.doInBackground = options.doInBackground ? options.doInBackground : null
   this.importScripts = options.importScripts ? options.importScripts : []
 
 }
-
 
 inherits( AsyncTask, EventEmitter )
 
@@ -58,9 +58,9 @@ AsyncTask.prototype.setupWorker = function() {
  * @returns {AsyncInterface}
 */
 AsyncTask.prototype.execute = function() {
-  var args
+  var args, taskPromise
 
-  if( this.__hasExecuted ) {
+  if( this.__hasExecuted && !this.__keepAlive ) {
     throw new Error( 'Cannot execute a allready executed AsyncTask' )
   }
 
@@ -72,7 +72,10 @@ AsyncTask.prototype.execute = function() {
 
   args = Array.prototype.slice.call( arguments )
 
-  return this.worker
-    .run( 'doInBackground', args )
-    .finally( _.bind(this.worker.terminate, this.worker) )
+  taskPromise = this.worker.run( 'doInBackground', args )
+
+  if( !this.__keepAlive )
+    taskPromise.finally( _.bind(this.worker.terminate, this.worker) )
+
+  return taskPromise
 }
