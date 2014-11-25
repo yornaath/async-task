@@ -4,10 +4,7 @@ AsyncTask
 Execute tasks on web Workers without seperate files.
 
 ```javascript
-var AsyncTask         = require( 'async-task' ).AsyncTask,
-    PromiseInterface  = require( 'async-task' ).PromiseInterface
-
-AsyncTask.defaults.asyncInterface = PromiseInterface
+var AsyncTask = require( 'async-task' )
 
 var task = new AsyncTask({
   doInBackground: function( a, b ) {
