@@ -1,7 +1,7 @@
 var _                 = require( 'underscore' ),
     inherits          = require( 'util' ) .inherits,
     EventEmitter      = require( 'events' ).EventEmitter,
-    BackgroundWorker  = require( './BackgroundWorker' )
+    BackgroundWorker  = require( 'background-worker' )
 
 
 module.exports = AsyncTask

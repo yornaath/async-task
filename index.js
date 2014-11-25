@@ -1,3 +1,1 @@
-module.exports = {
-  AsyncTask:          require( './src/AsyncTask' )
-}
+module.exports = require( './src/AsyncTask' )

@@ -1,4 +1,4 @@
-var AsyncTask         = require( '../index' ).AsyncTask
+var AsyncTask         = require( '../../index' )
 
 describe( 'AsyncTask', function() {
 
@@ -33,7 +33,7 @@ describe( 'AsyncTask', function() {
 
     it('should import scripts', function( done ) {
       var asyncTask = new AsyncTask({
-        importScripts: [location.protocol + "//" + location.host + "/base/test/import.js"],
+        importScripts: [location.protocol + "//" + location.host + "/base/test/assets/import.js"],
         doInBackground: function() {
           return importedFunc()
         }

@@ -9,20 +9,23 @@ module.exports = function(config) {
 
 
     // frameworks to use
-    frameworks: [ 'mocha', 'expect', 'browserify', 'sinon' ],
+    frameworks: [ 'mocha', 'expect', 'browserify' ],
 
     browserify: {
       watch: true
     },
 
     preprocessors: {
-        'test/**/*.js': [ 'browserify' ]
+      'test/specs/**/*.js': [ 'browserify' ]
     },
 
     // list of files / patterns to load in the browser
     files: [
-      'test/**/*.js'
+    'test/**/*.js',
+    { pattern: 'test/assets/**/*', included: false, served: true }
     ],
+
+
 
 
     // list of files to exclude
@@ -33,7 +36,7 @@ module.exports = function(config) {
     client: {
       captureConsole: true
     },
-    
+
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
     reporters: [ 'progress', 'osx' ],
@@ -55,7 +58,7 @@ module.exports = function(config) {
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: true,
 
-     // Start these browsers, currently available:
+    // Start these browsers, currently available:
     // - Chrome
     // - ChromeCanary
     // - Firefox
