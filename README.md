@@ -12,13 +12,11 @@ var task = new AsyncTask({
   }
 })
 
-task
-  .execute(1, 2)
+task.execute(1, 2)
   .then(function( result ) {
     result === 3
   })
-  .error( handleError )
-  .catch( handleException)
+  .catch( handleException )
 ```
 
 *Partially made, with <3 at:*
