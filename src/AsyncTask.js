@@ -55,7 +55,7 @@ AsyncTask.prototype.setupWorker = function() {
  * Execute the background job on a worker
  * @public
  * @function
- * @returns {AsyncInterface}
+ * @returns {bluebird/Promise}
 */
 AsyncTask.prototype.execute = function() {
   var args, taskPromise
