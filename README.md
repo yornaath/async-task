@@ -3,6 +3,13 @@ AsyncTask
 
 Execute tasks on web Workers without seperate files.
 
+### Install
+
+```
+npm install async-task
+```
+
+### Usage
 ```javascript
 var AsyncTask = require( 'async-task' )
 
