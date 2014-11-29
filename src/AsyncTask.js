@@ -37,7 +37,7 @@ inherits( AsyncTask, EventEmitter )
 AsyncTask.defaults = {}
 
 /*
- * Identity object for unset values
+ * Setup a background-worker/BackgroundWorker
  * @public
  * @function
 */
