@@ -26,16 +26,6 @@ function AsyncTask( options ) {
 inherits( AsyncTask, EventEmitter )
 
 /*
- * Default options for new AsyncTasks
- * @static
- * @public
- * @object
- * @property {object}           defaults                              - The default values for new AsyncTask's.
- * @property {AsyncInterface}   defaults.asyncInterfaceImplementation - The interface implementation to use for all new AsyncTasks
-*/
-AsyncTask.defaults = {}
-
-/*
  * Setup a background-worker/BackgroundWorker
  * @public
  * @function
