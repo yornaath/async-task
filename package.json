@@ -21,8 +21,7 @@
   "homepage": "https://github.com/gorillatron/async-task",
   "dependencies": {
     "background-worker": "0.0.2",
-    "bluebird": "^2.3.11",
-    "underscore": "^1.7.0"
+    "bluebird": "^2.3.11"
   },
   "devDependencies": {
     "karma": "^0.12.25",

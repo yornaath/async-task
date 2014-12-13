@@ -1,5 +1,4 @@
-var _                 = require( 'underscore' ),
-    inherits          = require( 'util' ) .inherits,
+var inherits          = require( 'util' ) .inherits,
     EventEmitter      = require( 'events' ).EventEmitter,
     BackgroundWorker  = require( 'background-worker' )
 
@@ -58,24 +57,22 @@ AsyncTask.prototype.setupWorker = function() {
  * @returns {bluebird/Promise}
 */
 AsyncTask.prototype.execute = function() {
-  var args, taskPromise
+  var worker, args, taskPromise
 
   if( this.__hasExecuted && !this.__keepAlive ) {
     throw new Error( 'Cannot execute a allready executed AsyncTask' )
   }
 
   this.__hasExecuted = true
-
   this.emit( 'execute' )
-
   this.setupWorker()
 
+  worker = this.worker
   args = Array.prototype.slice.call( arguments )
-
   taskPromise = this.worker.run( 'doInBackground', args )
 
   if( !this.__keepAlive )
-    taskPromise.finally( _.bind(this.worker.terminate, this.worker) )
+    taskPromise.finally(function() { worker.terminate() })
 
   return taskPromise
 }
