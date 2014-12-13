@@ -1,7 +1,9 @@
 AsyncTask
 =========
 
-Execute tasks on web Workers without seperate files.
+Execute tasks on web Workers without seperate files. In browsers without ```Worker``` support it fallbacks to ```iframe```.
+
+Nodejs support using ```child_process``` is under way.
 
 ### Install
 
