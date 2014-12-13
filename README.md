@@ -43,7 +43,7 @@ Execute the ```doInBackground``` function with supplied args.
 
 ### Roadmap
 
-* ```doInBackground``` can return a promise or maybe even a ``generator*``` so you can iterate over ```asyncTask.execute```
+* ```doInBackground``` can return a promise or maybe even a ```generator*``` so you can iterate over ```asyncTask.execute```
 * Nodejs support using child_process
 
 *Partially made, with <3 at:*
