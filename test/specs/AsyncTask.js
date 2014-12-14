@@ -1,4 +1,5 @@
 var AsyncTask = require( '../../index' )
+var BackgroundWorker = require( '../../../background-worker' )
 var Promise   = require( 'bluebird' )
 
 describe( 'AsyncTask', function() {
@@ -87,5 +88,38 @@ describe( 'AsyncTask', function() {
 
   })
 
+  describe('Sharing background-worker', function() {
+
+    it('should', function( done ) {
+      var worker = new BackgroundWorker({})
+
+      var taskA = new AsyncTask({
+        worker: worker,
+        doInBackground: function() {return "a" }
+      })
+
+      var taskB = new AsyncTask({
+        worker: worker,
+        doInBackground: function() {return "b" }
+      })
+
+      var taskC = new AsyncTask({
+        worker: worker,
+        doInBackground: function() {return "c" }
+      })
+
+      Promise.all([
+        taskA.execute(),
+        taskB.execute(),
+        taskC.execute()
+      ]).then(function(result) {
+        expect( result ).to.eql([ 'a', 'b', 'c' ])
+        worker.terminate()
+        done()
+      })
+
+    })
+
+  })
 
 })

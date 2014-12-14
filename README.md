@@ -16,9 +16,7 @@ npm install async-task
 var AsyncTask = require( 'async-task' )
 
 var task = new AsyncTask({
-  doInBackground: function( a, b ) {
-    return a + b
-  }
+  doInBackground: -> a + b
 })
 
 task.execute(1, 2)
@@ -38,10 +36,41 @@ Creates a new AsyncTask
 
 * ```options.doInBackground``` The work(function) to be done in the worker.
 * ```options.keepAlive``` Keep worker alive so ```.execute``` can be called multiple times.
+* ```options.worker``` Supply worker if you want to share worker between tasks. **NB!: termination of worker is left to the user**
 
 #### asyncTask.execute( args... ):bluebird/Promise
 
 Execute the ```doInBackground``` function with supplied args.
+
+
+###### Sharing worker example
+
+```javascript
+var AsyncTask = require( 'async-task' )
+var BackgroundWorker = require( 'background-worker' )
+
+var worker = new BackgroundWorker({})
+
+var taskA = new AsyncTask({
+  worker: worker,
+  doInBackground: -> 'a'
+})
+
+var taskB = new AsyncTask({
+  worker: worker,
+  doInBackground: -> 'b'
+})
+
+
+Promise.all([
+  taskA.execute(),
+  taskB.execute()
+]).then(function(result) {
+  result == [ 'a', 'b' ]
+  worker.terminate()
+})
+
+```
 
 ### Roadmap
 
