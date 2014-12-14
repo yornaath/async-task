@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/gorillatron/async-task",
   "dependencies": {
-    "background-worker": "0.0.2",
+    "background-worker": "0.0.3",
     "bluebird": "^2.3.11",
     "uuid": "^2.0.1"
   },
