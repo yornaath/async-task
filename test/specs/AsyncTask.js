@@ -1,6 +1,9 @@
-var AsyncTask = require( '../../index' )
-var BackgroundWorker = require( '../../../background-worker' )
-var Promise   = require( 'bluebird' )
+var AsyncTask         = require( '../../index' )
+var BackgroundWorker  = require( 'background-worker' )
+var Promise           = require( 'bluebird' )
+var expect            = require( 'expect.js' )
+var isNode            = require( 'detect-node' )
+
 
 describe( 'AsyncTask', function() {
 
@@ -72,25 +75,27 @@ describe( 'AsyncTask', function() {
       })
     })
 
-    it('should import scripts', function( done ) {
-      var asyncTask = new AsyncTask({
-        importScripts: [location.protocol + "//" + location.host + "/base/test/assets/import.js"],
-        doInBackground: function() {
-          return importedFunc()
-        }
-      })
+    if( !isNode ) {
+      it('should import scripts', function( done ) {
+        var asyncTask = new AsyncTask({
+          importScripts: [location.protocol + "//" + location.host + "/base/test/assets/import.js"],
+          doInBackground: function() {
+            return importedFunc()
+          }
+        })
 
-      asyncTask.execute(null).then(function( result ) {
-        expect( result ).to.equal( 'imported' )
-        done()
+        asyncTask.execute(null).then(function( result ) {
+          expect( result ).to.equal( 'imported' )
+          done()
+        })
       })
-    })
+    }
 
   })
 
   describe('Sharing background-worker', function() {
 
-    it('should', function( done ) {
+    it('should work gdmit', function( done ) {
       var worker = new BackgroundWorker({})
 
       var taskA = new AsyncTask({

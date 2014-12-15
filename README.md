@@ -69,8 +69,11 @@ Promise.all([
   result == [ 'a', 'b' ]
   worker.terminate()
 })
-
 ```
+
+#### Test
+
+```npm run-script test```
 
 ### Roadmap
 

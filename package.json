@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "./node_modules/karma/bin/karma start karma.conf.js --single-run true"
+    "test": "echo '--- RUNNING BROWSER TESTS----: \n' && ./node_modules/karma/bin/karma start karma.conf.js --single-run true && echo '\n-----RUNNING NODE TESTS----:\n' && node_modules/mocha/bin/mocha test/specs/AsyncTask.js"
   },
   "repository": {
     "type": "git",
@@ -20,11 +20,13 @@
   },
   "homepage": "https://github.com/gorillatron/async-task",
   "dependencies": {
-    "background-worker": "0.0.3",
+    "background-worker": "^0.1.0",
     "bluebird": "^2.3.11",
     "uuid": "^2.0.1"
   },
   "devDependencies": {
+    "detect-node": "^2.0.3",
+    "expect.js": "^0.3.1",
     "karma": "^0.12.25",
     "karma-browserify": "^1.0.0",
     "karma-chrome-launcher": "^0.1.5",
