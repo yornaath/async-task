@@ -7,25 +7,30 @@ module.exports = AsyncTask
  * @class AsyncTask
  * @author Jørn Andre Tangen @gorillatron
 */
-function AsyncTask( options ) {
-  options = typeof options != 'undefined' ? options : {}
+function AsyncTask( doInBackground, options ) {
+  if( typeof doInBackground === 'object' ) {
+    options = doInBackground
+    doInBackground = options.doInBackground
+  }
+
+  this._options = typeof options === 'object' ? options : {}
 
   this.__uuid = uuid.v4()
 
   this.__hasExecuted = false
-  this.__keepAlive = options.keepAlive
+  this.__keepAlive = this._options.keepAlive
   this.__sharingworker = false
 
-  this.doInBackground = options.doInBackground ? options.doInBackground : null
-  this.importScripts = options.importScripts ? options.importScripts : []
+  this.doInBackground = doInBackground
+  this.importScripts = this._options.importScripts ? this._options.importScripts : []
 
   if( typeof this.doInBackground !== 'function' ) {
     console.warn( 'AsyncTask[' + this.__uuid  + '].doInBackground is not function', this )
   }
 
-  if( options.worker ) {
+  if( this._options.worker ) {
     this.__sharingworker = true
-    this.setWorker( options.worker )
+    this.setWorker( this._options.worker )
   }
 }
 

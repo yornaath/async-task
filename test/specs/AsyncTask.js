@@ -7,6 +7,31 @@ var isNode            = require( 'detect-node' )
 
 describe( 'AsyncTask', function() {
 
+  describe( 'AsyncTask#constructor', function(){
+
+    it('should use first argument as doInBackground job if its a function', function( done ) {
+      var asyncTask = new AsyncTask(function( a, b ) {
+        return a + b
+      })
+
+      asyncTask.execute(3,3).then(function( result ) {
+        expect( result ).to.equal( 6 )
+        done()
+      })
+    })
+
+    it('should use second argument as options job if the first is the task', function() {
+      var opts = { keepAlive: true }
+
+      var asyncTask = new AsyncTask(function( a, b ) {
+        return a + b
+      }, opts)
+
+      expect( asyncTask._options ).to.equal( opts )
+    })
+
+  })
+
   describe('AsyncTask#execute', function() {
 
     it('should call the callback with the result of the doInBackground function', function( done ) {
