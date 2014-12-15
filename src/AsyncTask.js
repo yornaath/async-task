@@ -1,4 +1,4 @@
-var BackgroundWorker = require( '../../background-worker' )
+var BackgroundWorker = require( 'background-worker' )
 var uuid             = require( 'uuid' )
 
 module.exports = AsyncTask
