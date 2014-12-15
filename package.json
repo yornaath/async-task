@@ -1,6 +1,6 @@
 {
   "name": "async-task",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Run a AsyncTask using a web worker.",
   "main": "index.js",
   "directories": {
