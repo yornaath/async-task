@@ -19,6 +19,10 @@ function AsyncTask( options ) {
   this.doInBackground = options.doInBackground ? options.doInBackground : null
   this.importScripts = options.importScripts ? options.importScripts : []
 
+  if( typeof this.doInBackground !== 'function' ) {
+    console.warn( 'AsyncTask[' + this.__uuid  + '].doInBackground is not function', this )
+  }
+
   if( options.worker ) {
     this.__sharingworker = true
     this.setWorker( options.worker )
