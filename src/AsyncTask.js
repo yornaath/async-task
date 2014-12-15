@@ -7,8 +7,15 @@ module.exports = AsyncTask
  * @class AsyncTask
  * @author Jørn Andre Tangen @gorillatron
 */
-function AsyncTask( options ) {
+function AsyncTask( options, options2 ) {
   options = typeof options != 'undefined' ? options : {}
+  if ( typeof options == 'function' ) {
+    var function = options
+    if ( typeof options2 != 'undefined' ) {
+      options = options2
+    }
+    options.doInBackground = function
+  }
 
   this.__uuid = uuid.v4()
 
