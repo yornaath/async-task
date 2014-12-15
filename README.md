@@ -38,6 +38,22 @@ Creates a new AsyncTask
 * ```options.keepAlive``` Keep worker alive so ```.execute``` can be called multiple times.
 * ```options.worker``` Supply worker if you want to share worker between tasks. **NB!: termination of worker is left to the user**
 
+#### AsyncTask( doInBackground )
+
+If you pass a function, then that function will run in the background. This is shorter, and it looks like this:
+
+```javascript
+var task = new AsyncTask((a, b) -> a + b)
+```
+
+#### AsyncTask( doInBackground, options )
+
+If you pass a function and an options object, then that function will run in the background and the options will also be looked. For example:
+
+```javascript
+var task = new AsyncTask((a, b) -> a + b, {keepAlive: true})
+```
+
 #### asyncTask.execute( args... ):bluebird/Promise
 
 Execute the ```doInBackground``` function with supplied args.

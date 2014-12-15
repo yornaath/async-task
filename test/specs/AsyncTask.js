@@ -23,6 +23,18 @@ describe( 'AsyncTask', function() {
 
     })
 
+    it('should work if passed 2 arguments', function( done ) {
+      var asyncTask = new AsyncTask( function ( a, b ) {
+        return a + b
+      })
+
+      asyncTask.execute(3,3).then(function( result ) {
+        expect( result ).to.equal( 6 )
+        done()
+      })
+
+    })
+
     it('should throw error if executed for the second time', function() {
       var asyncTask = new AsyncTask({
         doInBackground: function( a, b ) {
