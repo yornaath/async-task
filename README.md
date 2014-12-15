@@ -16,7 +16,7 @@ npm install async-task
 var AsyncTask = require( 'async-task' )
 
 var task = new AsyncTask({
-  doInBackground: -> a + b
+  doInBackground: (a, b) -> a + b
 })
 
 task.execute(1, 2)
@@ -53,12 +53,12 @@ var worker = new BackgroundWorker({})
 
 var taskA = new AsyncTask({
   worker: worker,
-  doInBackground: -> 'a'
+  doInBackground: () -> 'a'
 })
 
 var taskB = new AsyncTask({
   worker: worker,
-  doInBackground: -> 'b'
+  doInBackground: () -> 'b'
 })
 
 

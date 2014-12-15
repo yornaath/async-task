@@ -1,7 +1,7 @@
 {
   "name": "async-task",
-  "version": "0.3.4",
-  "description": "Run a AsyncTask using a web worker.",
+  "version": "0.3.41",
+  "description": "Run a AsyncTask using a web worker or child_process.",
   "main": "index.js",
   "directories": {
     "test": "test"
