@@ -1,6 +1,5 @@
-AsyncTask
+AsyncTask ![](https://api.travis-ci.org/gorillatron/async-task.svg)
 =========
-
 Execute tasks asynchronous tasks without seperate files. In browsers without ```Worker``` support it fallbacks to ```iframe```.
 
 Inn Nodejs it spawns a process using ```child_process```.
