@@ -33,13 +33,13 @@ var task = new AsyncTask( (a, b) -> a + b, options )
 
 ### API
 
-#### AsyncTask( options )
+#### AsyncTask( doInBackground, options )
 
 Creates a new AsyncTask
 
 ##### options
 
-* ```options.doInBackground``` The work(function) to be done in the worker.
+* ```options.doInBackground``` The work(function) to be done in the worker if the first argument isnt the task.
 * ```options.keepAlive``` Keep worker alive so ```.execute``` can be called multiple times.
 * ```options.worker``` Supply worker if you want to share worker between tasks. **NB!: termination of worker is left to the user**
 
