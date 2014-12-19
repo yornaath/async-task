@@ -1,6 +1,6 @@
 {
   "name": "async-task",
-  "version": "0.3.24",
+  "version": "0.3.25",
   "description": "Run a AsyncTask using a web worker or child_process.",
   "main": "index.js",
   "directories": {
@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/gorillatron/async-task",
   "dependencies": {
-    "background-worker": "^0.1.1",
+    "background-worker": "^0.1.2",
     "bluebird": "^2.3.11",
     "uuid": "^2.0.1"
   },

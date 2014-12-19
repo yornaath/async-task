@@ -5,6 +5,7 @@ module.exports = _dereq_( './src/AsyncTask' )
 module.exports = _dereq_('./src/BackgroundWorker')
 
 },{"./src/BackgroundWorker":3}],3:[function(_dereq_,module,exports){
+(function (__dirname){
 "use strict";
 
 var child_process     = _dereq_( 'child_process' ),
@@ -258,7 +259,7 @@ function setupWebWorker( self ) {
 * @param {BackgroundWorker} self
 */
 function setupChildProcess( self ) {
-  self._childProcess = child_process.fork( './nodeworker.js' )
+  self._childProcess = child_process.fork( __dirname + '/nodeworker.js' )
   for( var i = 0; i < self.definitions.length; i++ ) {
     if( typeof self.definitions[i].val === 'function' ) {
       self.definitions[i].val = self.definitions[i].val.toString()
@@ -556,6 +557,7 @@ function getWorkerSourcecode( self ) {
   return src
 }
 
+}).call(this,"/node_modules/background-worker/src")
 },{"child_process":5,"detect-node":4}],4:[function(_dereq_,module,exports){
 (function (global){
 module.exports = false;
