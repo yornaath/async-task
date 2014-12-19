@@ -1,0 +1,26 @@
+{
+  "name": "async-task",
+  "main": "./bin/AsyncTask.js",
+  "version": "0.3.5",
+  "homepage": "https://github.com/gorillatron/async-task",
+  "authors": [
+    "gorillatron <jornandretangen@gmail.com>"
+  ],
+  "description": "Run a AsyncTask using a web worker or child_process.",
+  "keywords": [
+    "async",
+    "task",
+    "worker",
+    "parallel",
+    "concurrency",
+    "job"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
