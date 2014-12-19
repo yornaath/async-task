@@ -1,4 +1,4 @@
-AsyncTask ![](https://api.travis-ci.org/gorillatron/async-task.svg)
+AsyncTask [![Travis](https://api.travis-ci.org/gorillatron/async-task.svg)](https://travis-ci.org/gorillatron/async-task)
 =========
 Execute tasks asynchronous tasks without seperate files. In browsers without ```Worker``` support it fallbacks to ```iframe```.
 
