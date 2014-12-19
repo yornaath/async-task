@@ -78,7 +78,9 @@ AsyncTask.prototype.execute = function() {
   taskPromise = worker.run( this.__uuid + '::doInBackground', args )
 
   if( !this.__keepAlive && !this.__sharingworker ) {
-    taskPromise.finally(function() { worker.terminate() })
+    taskPromise
+      .then(function() { worker.terminate() })
+      .catch(function() { worker.terminate() })
   }
 
   return taskPromise
