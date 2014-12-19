@@ -10,6 +10,12 @@ Inn Nodejs it spawns a process using ```child_process```.
 npm install async-task
 ```
 
+Also support bower
+
+```
+bower install async-task
+```
+
 ### Usage
 ```javascript
 var AsyncTask = require( 'async-task' )
