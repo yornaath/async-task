@@ -48,7 +48,7 @@ Creates a new AsyncTask
 * ```options.keepAlive``` Keep worker alive so ```.execute``` can be called multiple times.
 * ```options.worker``` Supply worker if you want to share worker between tasks. **NB!: termination of worker is left to the user**
 
-#### asyncTask.execute( args... ):bluebird/Promise
+#### asyncTask.execute( args... ):Promise
 
 Execute the ```doInBackground``` function with supplied args.
 
