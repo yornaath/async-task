@@ -1,7 +1,7 @@
 {
   "name": "async-task",
   "main": "./bin/AsyncTask.js",
-  "version": "0.3.5",
+  "version": "0.3.23",
   "homepage": "https://github.com/gorillatron/async-task",
   "authors": [
     "gorillatron <jornandretangen@gmail.com>"
