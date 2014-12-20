@@ -89,6 +89,10 @@ Promise.all([
 
 * ```doInBackground``` can return a promise or maybe even a ```generator*``` so you can iterate over ```asyncTask.execute```
 
+### In the wild
+
+If your using it in your very cool project please drop me a note on jornandretangen ```àt``` gmail.com
+
 *Partially made, with <3 at:*
 
 [![Foo](http://wtw.no/gfx/wtw-logo2.png)](https://github.com/wtw-software/)
