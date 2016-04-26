@@ -18,5 +18,6 @@ double()
     console.log(res)
   })
   .finally(function( err ) {
+    console.error(err)
     task._worker.terminate()
   })
