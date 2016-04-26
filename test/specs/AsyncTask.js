@@ -8,7 +8,7 @@ import AsyncTask         from '../../src/AsyncTask'
 
 describe( 'AsyncTask', function() {
 
-  describe( 'AsyncTask#constructor', function(){
+  describe( 'AsyncTask#constructor', function() {
 
     it('should use first argument as doInBackground job if its a function', function( done ) {
       var asyncTask = new AsyncTask(function( a, b ) {
@@ -28,7 +28,7 @@ describe( 'AsyncTask', function() {
         return a + b
       }, opts)
 
-      expect( asyncTask._options ).to.equal( opts )
+      expect( asyncTask.options ).to.equal( opts )
     })
 
   })

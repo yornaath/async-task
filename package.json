@@ -1,6 +1,6 @@
 {
   "name": "async-task",
-  "version": "0.4.03",
+  "version": "0.4.1",
   "description": "Run a AsyncTask using a web worker or child_process.",
   "main": "index.js",
   "directories": {
@@ -27,12 +27,16 @@
     "uuid": "^2.0.1"
   },
   "devDependencies": {
+    "babel-plugin-syntax-flow": "^6.5.0",
+    "babel-plugin-transform-class-properties": "^6.6.0",
+    "babel-plugin-transform-flow-strip-types": "^6.7.0",
     "babel-preset-es2016": "^6.0.11",
     "babel-register": "^6.7.2",
     "babelify": "^7.3.0",
     "del": "^1.1.0",
     "detect-node": "^2.0.3",
     "expect.js": "^0.3.1",
+    "flow-bin": "^0.23.1",
     "gulp": "^3.8.10",
     "gulp-browserify": "^0.5.0",
     "gulp-rename": "^1.2.0",

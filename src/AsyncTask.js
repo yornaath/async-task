@@ -1,75 +1,78 @@
+/* @flow */
 
 import BackgroundWorker from 'background-worker'
 import uuid             from 'uuid'
 
-// Alias fpr array slice
-const slice = Array.prototype.slice
+
+type TaskFunction = () => Promise
+type Options = {keepAlive:boolean, doInBackground:TaskFunction}
 
 
-// AsyncTask
 export default class AsyncTask {
 
 
-	/**
-   * Create an asynchronous task
-   * @param {function} doInBackground - The task to perform
-   * @param {object} options - Options to pass
-   * @param {number} width - The width of the dot, in pixels.
-   */
+	doInBackground: TaskFunction;
 
-	constructor( doInBackground, options ) {
+	options: Options;
+	uuid: number;
+	hasExecuted: boolean;
+	keepAlive: boolean;
+	sharingworker: boolean;
+	worker: Object;
+
+
+	constructor( doInBackground:TaskFunction, options:Options ) {
+
 		if( typeof doInBackground === 'object' ) {
 	    options = doInBackground
 	    doInBackground = options.doInBackground
 	  }
 
-	  this._options = typeof options === 'object' ? options : {}
+	  this.options = options || {}
 
-	  this.__uuid = uuid.v4()
+	  this.uuid = uuid.v4()
 
-	  this.__hasExecuted = false
-	  this.__keepAlive = this._options.keepAlive
-	  this.__sharingworker = false
+	  this.hasExecuted = false
+	  this.keepAlive = this.options.keepAlive
+	  this.sharingworker = false
 
 	  this.doInBackground = doInBackground
-	  this.importScripts = this._options.importScripts ? this._options.importScripts : []
 
 	  if( typeof this.doInBackground !== 'function' ) {
-	    console.warn( 'AsyncTask[' + this.__uuid  + '].doInBackground is not function', this )
+	    console.warn( 'AsyncTask[' + this.uuid  + '].doInBackground is not function', this )
 	  }
 
-	  if( this._options.worker ) {
-	    this.__sharingworker = true
-	    this.setWorker( this._options.worker )
+	  if( this.options.worker ) {
+	    this.sharingworker = true
+	    this.setWorker( this.options.worker )
 	  }
 	}
 
-	setWorker(worker) {
-		this._worker = worker
-	  this._worker.importScripts = this.importScripts
-	  this._worker.define( this.__uuid + '::doInBackground', this.doInBackground.toString() )
-	  return this._worker
+	setWorker(worker:Object) {
+		this.worker = worker
+	  this.worker.define( this.uuid + '::doInBackground', this.doInBackground.toString() )
+	  return this.worker
 	}
 
 	execute() {
 		var worker, args, taskPromise
 
-	  if( this.__hasExecuted && !this.__keepAlive ) {
+	  if( this.hasExecuted && !this.keepAlive ) {
 	    throw new Error( 'Cannot execute a allready executed AsyncTask' )
 	  }
 
-	  if( !this._worker ) {
+	  if( !this.worker ) {
 	    this.setWorker( new BackgroundWorker({}) )
 	  }
 
-	  this.__hasExecuted = true
+	  this.hasExecuted = true
 
-	  worker = this._worker
-	  args = slice.call( arguments )
+	  worker = this.worker
+	  args = Array.prototype.slice.call( arguments )
 
-	  taskPromise = worker.run( this.__uuid + '::doInBackground', args )
+	  taskPromise = worker.run( this.uuid + '::doInBackground', args )
 
-	  if( !this.__keepAlive && !this.__sharingworker ) {
+	  if( !this.keepAlive && !this.sharingworker ) {
 	    taskPromise
 	      .then(function() { worker.terminate() })
 	      .catch(function() { worker.terminate() })
