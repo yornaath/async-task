@@ -1,1 +1,1 @@
-module.exports = require( './src/AsyncTask' )
+module.exports = require( './dist/AsyncTask' )
