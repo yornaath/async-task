@@ -1,6 +1,6 @@
 {
   "name": "async-task",
-  "version": "0.4.0",
+  "version": "0.4.01",
   "description": "Run a AsyncTask using a web worker or child_process.",
   "main": "index.js",
   "directories": {
@@ -36,6 +36,7 @@
     "gulp": "^3.8.10",
     "gulp-browserify": "^0.5.0",
     "gulp-rename": "^1.2.0",
+    "gulp-uglify": "^1.5.3",
     "karma": "^0.12.37",
     "karma-atom-reporter": "0.0.1",
     "karma-babel-preprocessor": "^6.0.1",

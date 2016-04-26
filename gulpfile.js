@@ -2,6 +2,7 @@ var gulp        = require( 'gulp' )
 var browserify  = require( 'gulp-browserify' )
 var babelify    = require( 'babelify' )
 var rename      = require( 'gulp-rename' )
+var uglify      = require( 'gulp-uglify' )
 var del         = require( 'del' )
 
 
@@ -21,6 +22,7 @@ gulp.task('build', ['clean'], function() {
       transform: [babelify],
       standalone: "AsyncTask"
     }))
+    .pipe( uglify() )
     .pipe( rename('AsyncTask.js') )
     .pipe( gulp.dest(paths.dist) )
 
