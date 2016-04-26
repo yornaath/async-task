@@ -8,7 +8,7 @@ var del         = require( 'del' )
 
 var paths = {
   dist: './dist',
-  main: './index.js'
+  src: './src/AsyncTask.js'
 }
 
 
@@ -17,7 +17,7 @@ gulp.task( 'clean', function( cb ) {
 })
 
 gulp.task('build', ['clean'], function() {
-  return gulp.src( paths.main )
+  return gulp.src( paths.src )
     .pipe( browserify({
       transform: [babelify],
       standalone: "AsyncTask"

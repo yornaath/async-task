@@ -2,13 +2,22 @@
 import BackgroundWorker from 'background-worker'
 import uuid             from 'uuid'
 
-
+// Alias fpr array slice
 const slice = Array.prototype.slice
 
 
+// AsyncTask
 export default class AsyncTask {
 
-	constructor(doInBackground, options) {
+
+	/**
+   * Create an asynchronous task
+   * @param {function} doInBackground - The task to perform
+   * @param {object} options - Options to pass
+   * @param {number} width - The width of the dot, in pixels.
+   */
+
+	constructor( doInBackground, options ) {
 		if( typeof doInBackground === 'object' ) {
 	    options = doInBackground
 	    doInBackground = options.doInBackground
