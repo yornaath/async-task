@@ -7,30 +7,23 @@ module.exports = function(config) {
     // base path, that will be used to resolve files and exclude
     basePath: './',
 
-
     // frameworks to use
-    frameworks: [ 'mocha', 'expect', 'browserify' ],
+    frameworks: ['expect', 'browserify', 'source-map-support', 'mocha'],
 
     browserify: {
-      watch: true
+      transform: [
+        ['babelify']
+      ]
     },
 
     preprocessors: {
-      'test/specs/**/*.js': [ 'browserify' ]
+      'test/**/*.js': [ 'browserify' ]
     },
 
     // list of files / patterns to load in the browser
     files: [
-    'test/**/*.js',
-    { pattern: 'test/assets/**/*', included: false, served: true }
-    ],
-
-
-
-
-    // list of files to exclude
-    exclude: [
-
+      'test/**/*.js',
+      { pattern: 'test/assets/**/*', included: false, served: true }
     ],
 
     client: {
@@ -66,7 +59,7 @@ module.exports = function(config) {
     // - Safari (only Mac; has to be installed with `npm install karma-safari-launcher`)
     // - PhantomJS
     // - IE (only Windows; has to be installed with `npm install karma-ie-launcher`)
-    browsers: [ 'Firefox' ],
+    browsers: [ 'Chrome' ],
 
     // If browser does not capture in given timeout [ms], kill it
     captureTimeout: 60000,

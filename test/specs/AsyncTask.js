@@ -1,8 +1,9 @@
-var AsyncTask         = require( '../../index' )
-var BackgroundWorker  = require( 'background-worker' )
-var Promise           = require( 'bluebird' )
-var expect            = require( 'expect.js' )
-var isNode            = require( 'detect-node' )
+
+import BackgroundWorker  from 'background-worker'
+import Promise           from 'bluebird'
+import expect            from 'expect.js'
+import isNode            from 'detect-node'
+import AsyncTask         from '../../src/AsyncTask'
 
 
 describe( 'AsyncTask', function() {
@@ -99,22 +100,6 @@ describe( 'AsyncTask', function() {
         done()
       })
     })
-
-    if( !isNode ) {
-      it('should import scripts', function( done ) {
-        var asyncTask = new AsyncTask({
-          importScripts: [location.protocol + "//" + location.host + "/base/test/assets/import.js"],
-          doInBackground: function() {
-            return importedFunc()
-          }
-        })
-
-        asyncTask.execute(null).then(function( result ) {
-          expect( result ).to.equal( 'imported' )
-          done()
-        })
-      })
-    }
 
   })
 

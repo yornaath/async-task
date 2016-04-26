@@ -1,5 +1,7 @@
 !function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.AsyncTask=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
-module.exports = _dereq_( './src/AsyncTask' )
+'use strict';
+
+module.exports = _dereq_('./src/AsyncTask');
 
 },{"./src/AsyncTask":8}],2:[function(_dereq_,module,exports){
 module.exports = _dereq_('./src/BackgroundWorker')
@@ -558,7 +560,9 @@ function getWorkerSourcecode( self ) {
 }
 
 }).call(this,"/node_modules/background-worker/src")
-},{"child_process":5,"detect-node":4}],4:[function(_dereq_,module,exports){
+},{"child_process":4,"detect-node":5}],4:[function(_dereq_,module,exports){
+
+},{}],5:[function(_dereq_,module,exports){
 (function (global){
 module.exports = false;
 
@@ -568,8 +572,6 @@ try {
 } catch(e) {}
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],5:[function(_dereq_,module,exports){
-
 },{}],6:[function(_dereq_,module,exports){
 (function (global){
 
@@ -791,93 +793,104 @@ uuid.unparse = unparse;
 module.exports = uuid;
 
 },{"./rng":6}],8:[function(_dereq_,module,exports){
-var BackgroundWorker = _dereq_( 'background-worker' )
-var uuid             = _dereq_( 'uuid' )
+'use strict';
 
-module.exports = AsyncTask
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 
-/*
- * @class AsyncTask
- * @author Jørn Andre Tangen @gorillatron
-*/
-function AsyncTask( doInBackground, options ) {
-  if( typeof doInBackground === 'object' ) {
-    options = doInBackground
-    doInBackground = options.doInBackground
-  }
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-  this._options = typeof options === 'object' ? options : {}
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-  this.__uuid = uuid.v4()
+var _backgroundWorker = _dereq_('background-worker');
 
-  this.__hasExecuted = false
-  this.__keepAlive = this._options.keepAlive
-  this.__sharingworker = false
+var _backgroundWorker2 = _interopRequireDefault(_backgroundWorker);
 
-  this.doInBackground = doInBackground
-  this.importScripts = this._options.importScripts ? this._options.importScripts : []
+var _uuid = _dereq_('uuid');
 
-  if( typeof this.doInBackground !== 'function' ) {
-    console.warn( 'AsyncTask[' + this.__uuid  + '].doInBackground is not function', this )
-  }
+var _uuid2 = _interopRequireDefault(_uuid);
 
-  if( this._options.worker ) {
-    this.__sharingworker = true
-    this.setWorker( this._options.worker )
-  }
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/*
- * Setup a background-worker/BackgroundWorker
- * @public
- * @function
-*/
-AsyncTask.prototype.setWorker = function( worker ) {
-  this._worker = worker
-  this._worker.importScripts = this.importScripts
-  this._worker.define( this.__uuid + '::doInBackground', this.doInBackground.toString() )
-  return this._worker
-}
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-/*
-* Array slice
-* @private
-* @function
-* @returns Array
-*/
-var slice = Array.prototype.slice
+var slice = Array.prototype.slice;
 
-/*
- * Execute the background job on a worker
- * @public
- * @function
- * @returns {bluebird/Promise}
-*/
-AsyncTask.prototype.execute = function() {
-  var worker, args, taskPromise
+var AsyncTask = function () {
+	function AsyncTask(doInBackground, options) {
+		_classCallCheck(this, AsyncTask);
 
-  if( this.__hasExecuted && !this.__keepAlive ) {
-    throw new Error( 'Cannot execute a allready executed AsyncTask' )
-  }
+		if ((typeof doInBackground === 'undefined' ? 'undefined' : _typeof(doInBackground)) === 'object') {
+			options = doInBackground;
+			doInBackground = options.doInBackground;
+		}
 
-  if( !this._worker ) {
-    this.setWorker( new BackgroundWorker({}) )
-  }
+		this._options = (typeof options === 'undefined' ? 'undefined' : _typeof(options)) === 'object' ? options : {};
 
-  this.__hasExecuted = true
+		this.__uuid = _uuid2.default.v4();
 
-  worker = this._worker
-  args = slice.call( arguments )
-  taskPromise = worker.run( this.__uuid + '::doInBackground', args )
+		this.__hasExecuted = false;
+		this.__keepAlive = this._options.keepAlive;
+		this.__sharingworker = false;
 
-  if( !this.__keepAlive && !this.__sharingworker ) {
-    taskPromise
-      .then(function() { worker.terminate() })
-      .catch(function() { worker.terminate() })
-  }
+		this.doInBackground = doInBackground;
+		this.importScripts = this._options.importScripts ? this._options.importScripts : [];
 
-  return taskPromise
-}
+		if (typeof this.doInBackground !== 'function') {
+			console.warn('AsyncTask[' + this.__uuid + '].doInBackground is not function', this);
+		}
+
+		if (this._options.worker) {
+			this.__sharingworker = true;
+			this.setWorker(this._options.worker);
+		}
+	}
+
+	_createClass(AsyncTask, [{
+		key: 'setWorker',
+		value: function setWorker(worker) {
+			this._worker = worker;
+			this._worker.importScripts = this.importScripts;
+			this._worker.define(this.__uuid + '::doInBackground', this.doInBackground.toString());
+			return this._worker;
+		}
+	}, {
+		key: 'execute',
+		value: function execute() {
+			var worker, args, taskPromise;
+
+			if (this.__hasExecuted && !this.__keepAlive) {
+				throw new Error('Cannot execute a allready executed AsyncTask');
+			}
+
+			if (!this._worker) {
+				this.setWorker(new _backgroundWorker2.default({}));
+			}
+
+			this.__hasExecuted = true;
+
+			worker = this._worker;
+			args = slice.call(arguments);
+
+			taskPromise = worker.run(this.__uuid + '::doInBackground', args);
+
+			if (!this.__keepAlive && !this.__sharingworker) {
+				taskPromise.then(function () {
+					worker.terminate();
+				}).catch(function () {
+					worker.terminate();
+				});
+			}
+
+			return taskPromise;
+		}
+	}]);
+
+	return AsyncTask;
+}();
+
+exports.default = AsyncTask;
 
 },{"background-worker":2,"uuid":7}]},{},[1])
 (1)
