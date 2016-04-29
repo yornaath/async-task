@@ -29,11 +29,6 @@ task.execute(1, 2)
   .catch( handleException )
 ```
 
-##### Shorthand
-```javascript
-var task = new AsyncTask( (a, b) => a + b, options )
-```
-
 ### API
 
 #### AsyncTask( doInBackground, options )
