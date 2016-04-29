@@ -20,9 +20,7 @@ bower install async-task
 ```javascript
 var AsyncTask = require( 'async-task' )
 
-var task = new AsyncTask({
-  doInBackground: (a, b) -> a + b
-})
+var task = new AsyncTask((a, b) => a + b)
 
 task.execute(1, 2)
   .then(function( result ) {
@@ -33,7 +31,7 @@ task.execute(1, 2)
 
 ##### Shorthand
 ```javascript
-var task = new AsyncTask( (a, b) -> a + b, options )
+var task = new AsyncTask( (a, b) => a + b, options )
 ```
 
 ### API
@@ -44,7 +42,6 @@ Creates a new AsyncTask
 
 ##### options
 
-* ```options.doInBackground``` The work(function) to be done in the worker if the first argument isnt the task.
 * ```options.keepAlive``` Keep worker alive so ```.execute``` can be called multiple times.
 * ```options.worker``` Supply worker if you want to share worker between tasks. **NB!: termination of worker is left to the user**
 
@@ -61,15 +58,9 @@ var BackgroundWorker = require( 'background-worker' )
 
 var worker = new BackgroundWorker({})
 
-var taskA = new AsyncTask({
-  worker: worker,
-  doInBackground: () -> 'a'
-})
+var taskA = new AsyncTask(() => 'a', {worker})
 
-var taskB = new AsyncTask({
-  worker: worker,
-  doInBackground: () -> 'b'
-})
+var taskB = new AsyncTask(() => 'b', {worker})
 
 
 Promise.all([
