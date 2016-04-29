@@ -1,0 +1,28 @@
+/* @flow */
+
+declare module 'async-task' {
+
+	declare type Worker = Object;
+	declare type Options = {keepAlive:boolean, doInBackground:TaskFunction, worker:Worker};
+
+	declare function TaskFunction(): Promise | mixed;
+
+	declare class AsyncTask {
+
+		doInBackground: TaskFunction;
+
+		options: Options;
+		uuid: number;
+		hasExecuted: boolean;
+		keepAlive: boolean;
+		sharingworker: boolean;
+		worker: Worker;
+
+		constructor(doInBackground:TaskFunction): AsyncTask;
+		constructor(doInBackground:TaskFunction, options:Options): AsyncTask;
+
+		execute():Promise;
+
+	}
+
+}

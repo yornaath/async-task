@@ -1,27 +1,11 @@
-/* @flow */
 
 import BackgroundWorker from 'background-worker'
 import uuid             from 'uuid'
 
 
-type TaskFunction = () => Promise
-type Options = {keepAlive:boolean, doInBackground:TaskFunction}
-
-
 export default class AsyncTask {
 
-
-	doInBackground: TaskFunction;
-
-	options: Options;
-	uuid: number;
-	hasExecuted: boolean;
-	keepAlive: boolean;
-	sharingworker: boolean;
-	worker: Object;
-
-
-	constructor( doInBackground:TaskFunction, options:Options ) {
+	constructor( doInBackground, options ) {
 
 		if( typeof doInBackground === 'object' ) {
 	    options = doInBackground
@@ -48,7 +32,7 @@ export default class AsyncTask {
 	  }
 	}
 
-	setWorker(worker:Object) {
+	setWorker(worker) {
 		this.worker = worker
 	  this.worker.define( this.uuid + '::doInBackground', this.doInBackground.toString() )
 	  return this.worker
