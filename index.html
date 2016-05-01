@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Async-task by gorillatron</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Async-task</h1>
+      <h2 class="project-tagline">Execute tasks asynchronous tasks on web Worker without seperate files. </h2>
+      <a href="https://github.com/gorillatron/async-task" class="btn">View on GitHub</a>
+      <a href="https://github.com/gorillatron/async-task/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/gorillatron/async-task/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="asynctask--" class="anchor" href="#asynctask--" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>AsyncTask <a href="https://travis-ci.org/gorillatron/async-task"><img src="https://api.travis-ci.org/gorillatron/async-task.svg" alt="Travis"></a> <a href="https://codeclimate.com/github/gorillatron/async-task"><img src="https://codeclimate.com/github/gorillatron/async-task/badges/gpa.svg" alt="Code Climate"></a>
+</h1>
+
+<p>Execute tasks asynchronous tasks without seperate files. In browsers without <code>Worker</code> support it fallbacks to <code>iframe</code>.</p>
+
+<p>In Nodejs it spawns a process using <code>child_process</code>.</p>
+
+<h3>
+<a id="install" class="anchor" href="#install" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Install</h3>
+
+<pre><code>npm install async-task
+</code></pre>
+
+<p>Also support bower</p>
+
+<pre><code>bower install async-task
+</code></pre>
+
+<h3>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h3>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> AsyncTask <span class="pl-k">=</span> <span class="pl-c1">require</span>( <span class="pl-s"><span class="pl-pds">'</span>async-task<span class="pl-pds">'</span></span> )
+
+<span class="pl-k">var</span> task <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">AsyncTask</span>((<span class="pl-smi">a</span>, <span class="pl-smi">b</span>) <span class="pl-k">=&gt;</span> a <span class="pl-k">+</span> b)
+
+<span class="pl-smi">task</span>.<span class="pl-en">execute</span>(<span class="pl-c1">1</span>, <span class="pl-c1">2</span>)
+  .<span class="pl-en">then</span>(<span class="pl-k">function</span>( <span class="pl-smi">result</span> ) {
+    result <span class="pl-k">===</span> <span class="pl-c1">3</span>
+  })
+  .<span class="pl-en">catch</span>( handleException )</pre></div>
+
+<h3>
+<a id="api" class="anchor" href="#api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>API</h3>
+
+<h4>
+<a id="asynctask-doinbackground-options-" class="anchor" href="#asynctask-doinbackground-options-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>AsyncTask( doInBackground, options )</h4>
+
+<p>Creates a new AsyncTask</p>
+
+<h5>
+<a id="options" class="anchor" href="#options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>options</h5>
+
+<ul>
+<li>
+<code>options.keepAlive</code> Keep worker alive so <code>.execute</code> can be called multiple times.</li>
+<li>
+<code>options.worker</code> Supply worker if you want to share worker between tasks. <strong>NB!: termination of worker is left to the user</strong>
+</li>
+</ul>
+
+<h4>
+<a id="asynctaskexecute-args-promise" class="anchor" href="#asynctaskexecute-args-promise" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>asyncTask.execute( args... ):Promise</h4>
+
+<p>Execute the <code>doInBackground</code> function with supplied args.</p>
+
+<h6>
+<a id="sharing-worker-example" class="anchor" href="#sharing-worker-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sharing worker example</h6>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> AsyncTask <span class="pl-k">=</span> <span class="pl-c1">require</span>( <span class="pl-s"><span class="pl-pds">'</span>async-task<span class="pl-pds">'</span></span> )
+<span class="pl-k">var</span> BackgroundWorker <span class="pl-k">=</span> <span class="pl-c1">require</span>( <span class="pl-s"><span class="pl-pds">'</span>background-worker<span class="pl-pds">'</span></span> )
+
+<span class="pl-k">var</span> worker <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">BackgroundWorker</span>({})
+
+<span class="pl-k">var</span> taskA <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">AsyncTask</span>(() <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, {worker})
+
+<span class="pl-k">var</span> taskB <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">AsyncTask</span>(() <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>, {worker})
+
+
+<span class="pl-smi">Promise</span>.<span class="pl-c1">all</span>([
+  <span class="pl-smi">taskA</span>.<span class="pl-en">execute</span>(),
+  <span class="pl-smi">taskB</span>.<span class="pl-en">execute</span>()
+]).<span class="pl-en">then</span>(<span class="pl-k">function</span>(<span class="pl-smi">result</span>) {
+  result <span class="pl-k">==</span> [ <span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span> ]
+  <span class="pl-smi">worker</span>.<span class="pl-en">terminate</span>()
+})</pre></div>
+
+<h4>
+<a id="test" class="anchor" href="#test" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Test</h4>
+
+<p><code>npm run-script test</code></p>
+
+<h3>
+<a id="roadmap" class="anchor" href="#roadmap" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Roadmap</h3>
+
+<ul>
+<li>
+<code>doInBackground</code> can return a promise or maybe even a <code>generator*</code> so you can iterate over <code>asyncTask.execute</code>
+</li>
+</ul>
+
+<h3>
+<a id="in-the-wild" class="anchor" href="#in-the-wild" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>In the wild</h3>
+
+<p>If your using it in your very cool project please drop me a note on jornandretangen <code>àt</code> gmail.com</p>
+
+<p><em>Partially made, with &lt;3 at:</em></p>
+
+<p><a href="https://github.com/wtw-software/"><img src="http://wtw.no/gfx/wtw-logo2.png" alt="Foo"></a></p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/gorillatron/async-task">Async-task</a> is maintained by <a href="https://github.com/gorillatron">gorillatron</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
