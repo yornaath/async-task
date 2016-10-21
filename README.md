@@ -1,6 +1,6 @@
 AsyncTask [![Travis](https://api.travis-ci.org/gorillatron/async-task.svg)](https://travis-ci.org/gorillatron/async-task) [![Code Climate](https://codeclimate.com/github/gorillatron/async-task/badges/gpa.svg)](https://codeclimate.com/github/gorillatron/async-task)
 =========
-Execute tasks asynchronous tasks without seperate files. In browsers without ```Worker``` support it fallbacks to ```iframe```.
+Execute tasks asynchronous tasks without separate files. In browsers without ```Worker``` support it fallbacks to ```iframe```.
 
 In Nodejs it spawns a process using ```child_process```.
 
