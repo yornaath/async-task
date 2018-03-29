@@ -7,8 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "echo '--- RUNNING BROWSER TESTS----: \n' && ./node_modules/.bin/karma start karma.conf.js --single-run true",
-    "test-node": "node_modules/.bin/mocha --compilers js:babel-register test/specs/AsyncTask.js",
+    "test": "./node_modules/.bin/karma start karma.conf.js --single-run true",
+    "test-node": "node_modules/.bin/mocha --compilers js:babel-register test/specs/**/*.js",
     "testwatch": "./node_modules/.bin/karma start karma.conf.js"
   },
   "repository": {
@@ -23,13 +23,15 @@
   "homepage": "https://github.com/gorillatron/async-task",
   "dependencies": {
     "background-worker": "^0.1.2",
-    "bluebird": "^2.3.11",
-    "uuid": "^2.0.1"
+    "bluebird": "^3.3.5",
+    "uuid": "^2.0.1",
+    "zen-observable": "^0.2.1"
   },
   "devDependencies": {
     "babel-plugin-syntax-flow": "^6.5.0",
     "babel-plugin-transform-class-properties": "^6.6.0",
     "babel-plugin-transform-flow-strip-types": "^6.7.0",
+    "babel-plugin-transform-object-rest-spread": "^6.6.5",
     "babel-preset-es2016": "^6.0.11",
     "babel-register": "^6.7.2",
     "babelify": "^7.3.0",

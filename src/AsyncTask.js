@@ -39,9 +39,7 @@ export default class AsyncTask {
   }
 
   execute() {
-    var worker, args, taskPromise
-
-    if( this.hasExecuted && !this.keepAlive ) {
+		if( this.hasExecuted && !this.keepAlive ) {
       throw new Error( 'Cannot execute a allready executed AsyncTask' )
     }
 
@@ -51,10 +49,9 @@ export default class AsyncTask {
 
     this.hasExecuted = true
 
-    worker = this.worker
-    args = Array.prototype.slice.call( arguments )
-
-    taskPromise = worker.run( this.uuid + '::doInBackground', args )
+    const worker = this.worker
+    const args = this.options.arguments || Array.prototype.slice.call( arguments )
+    const taskPromise = worker.run( this.uuid + '::doInBackground', args )
 
     if( !this.keepAlive && !this.sharingworker ) {
       taskPromise
